@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "model": "test model",
+    "prompt": "Write a function that adds two numbers",
+    "code": "var x = function(a, b) { return a + b; }"
+  },
+  {
+    "id": 2,
+    "model": "test model",
+    "prompt": "Write a function that adds two numbers",
+    "code": "const add = (a, b) => a + b;"
+  },
+  {
+    "id": 3,
+    "model": "test model 2",
+    "prompt": "Write a function with an empty body",
+    "code": "var x = function() {}"
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "name": "ast_toda2000_cabr2300",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cabr2300/AST_toda2000_cabr2300"
+  },
+  "private": true,
+  "dependencies": {
+    "acorn": "^8.16.0"
+  }
+}
