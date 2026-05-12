@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Map;
 
 /**
  * Class for traversing an AST and giving it a binary score
@@ -10,14 +11,10 @@ public class ScoringPipeline {
     private final List<DeprecationRule> rules;
 
     /**
-     * Construct the list of {@link DeprecationRule}s used to score an AST.
+     * Get the list of {@link DeprecationRule}s used to score an AST.
      */
     public ScoringPipeline() {
-        //TODO add more rules
-        rules = List.of(
-                new DeprecationRule(NodeType.VAR_DECLARATION, "var is deprecated, use let or const"),
-                new DeprecationRule(NodeType.FUNCTION_DECLARATION, "prefer arrow functions in modern JS")
-        );
+        rules = RuleBook.getRules();
     }
 
     /**
@@ -25,27 +22,44 @@ public class ScoringPipeline {
      * @param root is the root {@link ASTNode} of the AST
      * @return 0 of at least one rule has been violated, otherwise 1.
      */
-    public int score(ASTNode root) {
-        int penalty = countPenalties(root);
+    public int score(ASTNode root, Context ctx) {
+        populateContext(root, ctx);
+        int penalty = countPenalties(root, ctx);
         return penalty == 0 ? 1 : 0;
     }
 
     /**
      * Traverses the AST recursively, accumulating penalties when deprecation rules are violated.
      * @param node is the root of the current subtree being investigated
+     * @param ctx is the {@link Context} of the AST by which the node is evaluated.
      * @return the sum of penalties.
      */
-    private int countPenalties(ASTNode node) {
+    private int countPenalties(ASTNode node, Context ctx) {
         int penalty = 0;
         for(DeprecationRule rule : rules) {
-            if(rule.matches(node)) {
-                System.out.println(node.getValue() + ": " + rule.getReason());
+            if(rule.matches(node, ctx)) {
+                System.out.println(rule.getReason());
                 penalty += 1;
             }
         }
         for(ASTNode child : node.getChildren()) {
-            penalty += countPenalties(child);
+            penalty += countPenalties(child, ctx);
         }
         return penalty;
+    }
+
+    /**
+     * Traverses the AST recursively, adding relevant context in order to evaluate {@link DeprecationRule}s
+     * @param node is the current {@link ASTNode} to examine.
+     * @param ctx is the {@link Context} instance to which data mey be added.
+     */
+    private void populateContext(ASTNode node, Context ctx) {
+        if(node.getType() == NodeType.IMPORT_DECLARATION) {
+            Map<String, ImportInfo> imports = node.getImportInfo();
+            ctx.imports.putAll(imports);
+        }
+        for(ASTNode child : node.getChildren()) {
+            populateContext(child, ctx);
+        }
     }
 }

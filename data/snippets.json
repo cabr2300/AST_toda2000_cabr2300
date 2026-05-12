@@ -15,6 +15,54 @@
     "id": 3,
     "model": "test model 2",
     "prompt": "Write a function with an empty body",
-    "code": "var x = function() {}"
+    "code": "const x = function() {}"
+  },
+  {
+    "id": 4,
+    "model": "test model 2",
+    "prompt": "Write a call to parse with Acorn",
+    "code": "import acorn from \"acorn\"; acorn.parse();"
+  },
+  {
+    "id": 5,
+    "model": "test model 2",
+    "prompt": "Write a method that can execute a code snippet",
+    "code": "eval(\"console.log('test')\");"
+  },
+  {
+    "id": 6,
+    "model": "test model 2",
+    "prompt": "Write an import for left-pad",
+    "code": "import leftPad from \"left-pad\";"
+  },
+  {
+    "id": 7,
+    "model": "test model 2",
+    "prompt": "Write a method to synchronously check if a file exists",
+    "code": "import fs from \"fs\";\n\nif (fs.existsSync(\"file.txt\")) {\n    console.log(\"File exists\");\n}"
+  },
+  {
+    "id": 8,
+    "model": "test model 2",
+    "prompt": "Write a wildcard import from fs with the alias fs",
+    "code": "import * as fs from \"fs\";"
+  },
+  {
+    "id": 9,
+    "model": "test model 2",
+    "prompt": "Import existsSync from fs with the alias exists",
+    "code": "import { existsSync as exists } from \"fs\";\n\nexists(\"Hello\");"
+  },
+  {
+    "id": 10,
+    "model": "test model 2",
+    "prompt": "Import the fs library",
+    "code": "import fs from \"fs\";\n\nfs.existsSync(\"Hello\");"
+  },
+  {
+    "id": 11,
+    "model": "test model 2",
+    "prompt": "execute existSync",
+    "code": "import existsSync from \"fs\";\n\nexistsSync(\"Hello\");"
   }
 ]

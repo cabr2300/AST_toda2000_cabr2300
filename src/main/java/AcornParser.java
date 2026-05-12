@@ -32,7 +32,7 @@ public class AcornParser {
         Process process = pb.start();
 
         // Write jsSource to the process stdin
-        try (OutputStream stdin = process.getOutputStream()){
+        try(OutputStream stdin = process.getOutputStream()){
             stdin.write(jsSource.getBytes(StandardCharsets.UTF_8));
         }
 

@@ -6,5 +6,5 @@ const fs = require("fs");
  * @type {string} is the JS code.
  */
 const code = fs.readFileSync(process.stdin.fd, "utf-8");
-const ast = acorn.parse(code, { ecmaVersion: 2020 });
+const ast = acorn.parse(code, { ecmaVersion: 2020, sourceType: "module" });
 console.log(JSON.stringify(ast));
