@@ -24,13 +24,13 @@ public final class Conditions {
             if(object == null) { // import existSync from "fs" || import existSync as exist fom "fs"
                 ImportInfo info = ctx.imports.get(property);
                 return info != null
-                        && info.sourceModule().equals("fs")
-                        && info.importedName().equals("existsSync");
+                        && info.sourceModule().equals(moduleName)
+                        && info.importedName().equals(methodName);
             } // import fs from "fs"
             ImportInfo info = ctx.imports.get(object);
             return info != null
-                    && property.equals("existsSync")
-                    && info.sourceModule().equals("fs");
+                    && property.equals(methodName)
+                    && info.sourceModule().equals(moduleName);
         };
     }
 
