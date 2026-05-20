@@ -35,6 +35,17 @@ public final class Conditions {
     }
 
     /**
+     * The conditions to confirm whether a given imported method is called with a string first argument.
+     * @param moduleName is the name of an imported module binding.
+     * @param methodName is the name of a method of that module.
+     * @return the {@link NodeCondition} that determines whether the condition is true or false.
+     */
+    public static NodeCondition deprecatedImportedMethodWithStringArgument(String moduleName, String methodName) {
+        NodeCondition importedMethod = deprecatedImportedMethod(moduleName, methodName);
+        return (node, ctx) -> importedMethod.test(node, ctx) && node.hasStringArgument(0);
+    }
+
+    /**
      * The conditions to confirm whether a given import module is used in an {@link ASTNode}.
      * @param moduleName is the name of an imported module binding.
      * @return the {@link NodeCondition} that determines whether the condition is true or false.
