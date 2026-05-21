@@ -147,6 +147,31 @@ public class ASTNode {
     }
 
     /**
+     * Checks whether a call expression argument is definitely a string.
+     * @param index is the zero-based argument position.
+     * @return whether the argument is a string literal or static template string.
+     */
+    public boolean hasStringArgument(int index) {
+        if(raw == null || index < 0) return false;
+        JsonNode arguments = raw.get("arguments");
+        if(arguments == null || !arguments.isArray() || arguments.size() <= index) return false;
+
+        JsonNode argument = arguments.get(index);
+        JsonNode type = argument.get("type");
+        if(type == null) return false;
+
+        if("Literal".equals(type.asText())) {
+            JsonNode value = argument.get("value");
+            return value != null && value.isTextual();
+        }
+        if("TemplateLiteral".equals(type.asText())) {
+            JsonNode expressions = argument.get("expressions");
+            return expressions != null && expressions.isArray() && expressions.size() == 0;
+        }
+        return false;
+    }
+
+    /**
      * Extracts the source value of the import module and the local name of the import.
      * Creates an {@link ImportInfo } for each import from the source.
      * The method is called on nodes of the {@code ImportDeclaration} type, which wraps

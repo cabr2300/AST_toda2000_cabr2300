@@ -17,19 +17,158 @@ public final class RuleBook {
      */
     public static List<DeprecationRule> getRules() {
         return List.of(
-            new DeprecationRule(NodeType.VARIABLE_DECLARATION, Conditions.deprecatedKind("var"),"var is deprecated, use let or const"),
-            new DeprecationRule(NodeType.FUNCTION_DECLARATION, "prefer arrow functions in modern JS"),
+             
+            new DeprecationRule(NodeType.VARIABLE_DECLARATION, Conditions.deprecatedKind("var"),"var is deprecated, use let or const"), // TO REMOVE: var is not formally deprecated.
+            new DeprecationRule(NodeType.FUNCTION_DECLARATION, "prefer arrow functions in modern JS"), // TO REMOVE: arrow functions is not formally deprecated.
             new DeprecationRule(NodeType.WITH_STATEMENT,"With statement considered bad practice"),
-            new DeprecationRule(NodeType.CALL_EXPRESSION,
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION, // TO REMOVE: eval or window.eval is not formally deprecated.
                     Conditions.deprecatedStandardMethod("eval", "window.eval"),
                     "Avoid using eval()"),
-            new DeprecationRule(NodeType.IMPORT_DECLARATION,
+
+            new DeprecationRule(NodeType.IMPORT_DECLARATION, // TO REMOVE: left-pad was unpublished from npm in 2016 (the Kik incident), not formally deprecated by TC39, MDN, or Node.js.
                     Conditions.deprecatedModule("left-pad"),
                     "left-pad is deprecated"),
-            new DeprecationRule(NodeType.CALL_EXPRESSION,
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION, // TO REMOVE: fs.existsSync is not deprecated. No DEP entry. Actively maintained.
                     Conditions.deprecatedImportedMethod("fs", "existsSync"),
-                    "fs.existsSync is considered bad practice"
-            )
+                    "fs.existsSync is considered bad practice"),
+
+
+            // -- Browser / Web Platform --
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedStandardMethod("escape"),
+                    "escape() is deprecated, use encodeURIComponent() instead"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedStandardMethod("unescape"),
+                    "unescape() is deprecated, use decodeURIComponent() instead"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedStandardMethod("document.write"),
+                    "document.write() is deprecated"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedStandardMethod("document.createEvent"),
+                    "document.createEvent() is deprecated, use new Event() or new CustomEvent() instead"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedStandardMethod("document.execCommand"),
+                    "document.execCommand() is deprecated, use the Clipboard API instead"),
+
+            
+            // -- Node.js -- Modules
+            new DeprecationRule(NodeType.IMPORT_DECLARATION,
+                    Conditions.deprecatedModule("punycode"),
+                    "punycode is deprecated (DEP0040), use a userland alternative"),
+
+            new DeprecationRule(NodeType.IMPORT_DECLARATION,
+                    Conditions.deprecatedModule("domain"),
+                    "domain is deprecated (DEP0032)"),
+
+
+            // -- Node.js -- Util
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("util", "isArray"),
+                    "util.isArray() is deprecated (DEP0044), use Array.isArray() instead"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("util", "isBoolean"),
+                    "util.isBoolean() is deprecated (DEP0045), use typeof x === 'boolean' instead"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("util", "isBuffer"),
+                    "util.isBuffer() is deprecated (DEP0046), use Buffer.isBuffer() instead"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("util", "isDate"),
+                    "util.isDate() is deprecated (DEP0047), use x instanceof Date instead"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("util", "isError"),
+                    "util.isError() is deprecated (DEP0048), use Error.isError() instead"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("util", "isFunction"),
+                    "util.isFunction() is deprecated (DEP0049), use typeof x === 'function' instead"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("util", "isNull"),
+                    "util.isNull() is deprecated (DEP0050), use x === null instead"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("util", "isNumber"),
+                    "util.isNumber() is deprecated (DEP0052), use typeof x === 'number' instead"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("util", "isString"),
+                    "util.isString() is deprecated (DEP0056), use typeof x === 'string' instead"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("util", "isUndefined"),
+                    "util.isUndefined() is deprecated (DEP0058), use x === undefined instead"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("util", "log"),
+                    "util.log() is deprecated (DEP0059), use console.log() with a timestamp instead"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("util", "_extend"),
+                    "util._extend() is deprecated (DEP0060), use Object.assign() instead"),
+            // -- Node.js -- Buffer
+            new DeprecationRule(NodeType.NEW_EXPRESSION,
+                    Conditions.deprecatedStandardMethod("Buffer"),
+                    "new Buffer() is deprecated (DEP0005), use Buffer.from() or Buffer.alloc() instead"),
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedStandardMethod("Buffer"),
+                    "Buffer() is deprecated (DEP0005), use Buffer.from() or Buffer.alloc() instead"),
+
+            // -- Node.js -- URL
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("url", "parse"),
+                    "url.parse() is deprecated, use new URL() instead"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethodWithStringArgument("url", "format"),
+                    "url.format(string) is deprecated, use new URL() instead"),
+
+            // -- Node.js -- File System
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("fs", "exists"),
+                    "fs.exists() is deprecated (DEP0034), use fs.access() or fs.stat() instead"),
+
+            // -- Node.js -- Crypto
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("crypto", "createCipher"),
+                    "crypto.createCipher() is deprecated (DEP0106), use crypto.createCipheriv() instead"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("crypto", "createDecipher"),
+                    "crypto.createDecipher() is deprecated (DEP0106), use crypto.createDecipheriv() instead"),
+
+            // -- Node.js -- OS
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("os", "tmpDir"),
+                    "os.tmpDir() is deprecated (DEP0022), use os.tmpdir() instead"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("os", "getNetworkInterfaces"),
+                    "os.getNetworkInterfaces() is deprecated (DEP0023), use os.networkInterfaces() instead"),
+
+            // -- Node.js -- TLS
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("tls", "createSecurePair"),
+                    "tls.createSecurePair() is deprecated (DEP0064), use tls.TLSSocket instead"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("tls", "parseCertString"),
+                    "tls.parseCertString() is deprecated (DEP0076)")
+
+            
+
+
+
+
         );
     }
 }

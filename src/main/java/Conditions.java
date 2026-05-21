@@ -24,14 +24,25 @@ public final class Conditions {
             if(object == null) { // import existSync from "fs" || import existSync as exist fom "fs"
                 ImportInfo info = ctx.imports.get(property);
                 return info != null
-                        && info.sourceModule().equals("fs")
-                        && info.importedName().equals("existsSync");
+                        && info.sourceModule().equals(moduleName)
+                        && info.importedName().equals(methodName);
             } // import fs from "fs"
             ImportInfo info = ctx.imports.get(object);
             return info != null
-                    && property.equals("existsSync")
-                    && info.sourceModule().equals("fs");
+                    && property.equals(methodName)
+                    && info.sourceModule().equals(moduleName);
         };
+    }
+
+    /**
+     * The conditions to confirm whether a given imported method is called with a string first argument.
+     * @param moduleName is the name of an imported module binding.
+     * @param methodName is the name of a method of that module.
+     * @return the {@link NodeCondition} that determines whether the condition is true or false.
+     */
+    public static NodeCondition deprecatedImportedMethodWithStringArgument(String moduleName, String methodName) {
+        NodeCondition importedMethod = deprecatedImportedMethod(moduleName, methodName);
+        return (node, ctx) -> importedMethod.test(node, ctx) && node.hasStringArgument(0);
     }
 
     /**
