@@ -64,5 +64,23 @@
     "model": "test model 2",
     "prompt": "execute existSync",
     "code": "import existsSync from \"fs\";\n\nexistsSync(\"Hello\");"
+  },
+  {
+    "id": 12,
+    "model": "test model 2",
+    "prompt": "componentWillMount",
+    "code": "import React from \"react\";\n\nclass MyComponent extends React.Component {\n    componentWillMount() {\n        // lifecycle hook\n    }\n}"
+  },
+  {
+    "id": 13,
+    "model": "test model 2",
+    "prompt": "componentWillReceiveProps",
+    "code": "class MyComponent extends React.Component {\n    componentWillReceiveProps(nextProps) {\n        console.log(\"New props received:\", nextProps);\n    }\n\n    render() {\n        return <div>{this.props.value}</div>;\n    }\n}"
+  },
+  {
+    "id": 15,
+    "model": "test model 2",
+    "prompt": "componentWillUpdate",
+    "code": "class MyComponent extends React.Component {\n    componentWillUpdate(nextProps, nextState) {\n        console.log(\"About to update\", nextProps, nextState);\n    }\n\n    render() {\n        return <div>{this.props.value}</div>;\n    }\n}"
   }
 ]

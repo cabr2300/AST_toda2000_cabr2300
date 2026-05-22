@@ -1,7 +1,4 @@
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Class for carrying import module information between nodes in the AST.
@@ -10,4 +7,5 @@ import java.util.Set;
  */
 public class Context {
     Map<String, ImportInfo> imports = new HashMap<>();
+    List<String> memberExpressions = new ArrayList<>();
 }

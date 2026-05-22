@@ -3,6 +3,7 @@ import java.util.List;
 /**
  * Utility class holding and providing {@link DeprecationRule}s
  * @author Carl Broberg
+ * @author Tobias Danielsson
  */
 public final class RuleBook {
 
@@ -162,13 +163,28 @@ public final class RuleBook {
 
             new DeprecationRule(NodeType.CALL_EXPRESSION,
                     Conditions.deprecatedImportedMethod("tls", "parseCertString"),
-                    "tls.parseCertString() is deprecated (DEP0076)")
+                    "tls.parseCertString() is deprecated (DEP0076)"),
 
-            
+            // -- TC39 -- arguments.callee()
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedStandardMethod("arguments.callee"),
+                    "arguments.callee is deprecated, use named function expressions instead"),
+
+            // -- React -- componentWillMount()
+            new DeprecationRule(NodeType.IDENTIFIER,
+                    Conditions.deprecatedLifecycleMethod("React.Component", "componentWillMount"),
+                    "componentWillMount is deprecated, use componentDidMount instead"),
 
 
+            // -- React -- componentWillReceiveProps()
+            new DeprecationRule(NodeType.IDENTIFIER,
+                    Conditions.deprecatedLifecycleMethod("React.Component", "componentWillReceiveProps"),
+                    "componentWillReceiveProps is deprecated, use getDerivedStateFromProps instead"),
 
-
+            // -- React -- componentWillUpdate()
+            new DeprecationRule(NodeType.IDENTIFIER,
+                    Conditions.deprecatedLifecycleMethod("React.Component", "componentWillUpdate"),
+                    "componentWillUpdate is deprecated, use getSnapshotBeforeUpdate instead")
         );
     }
 }

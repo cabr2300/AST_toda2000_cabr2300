@@ -58,6 +58,9 @@ public class ScoringPipeline {
             Map<String, ImportInfo> imports = node.getImportInfo();
             ctx.imports.putAll(imports);
         }
+        if(node.getType() == NodeType.MEMBER_EXPRESSION) {
+            ctx.memberExpressions.add(node.getMemberExpression());
+        }
         for(ASTNode child : node.getChildren()) {
             populateContext(child, ctx);
         }

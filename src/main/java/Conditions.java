@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 /**
  * Class establishing the conditions under which {@link DeprecationRule}s may be valid.
  * The different type of condition depends on what type of code element is deprecated.
@@ -81,5 +83,15 @@ public final class Conditions {
      */
     public static NodeCondition deprecatedKind(String kind) {
         return (node, ctx) -> kind.equals((node.getKind()));
+    }
+
+    /**
+     * The condition to confirm whether the node is a specific method of a specific class.
+     * @param className is the name of the Class within which the method is.
+     * @param methodName is the name of the method.
+     * @return whether the provided params match.
+     */
+    public static NodeCondition deprecatedLifecycleMethod(String className, String methodName) {
+        return (node, ctx) -> node.getName().equals(methodName) && ctx.memberExpressions.contains(className);
     }
 }

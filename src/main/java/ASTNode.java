@@ -9,7 +9,6 @@ import java.util.*;
 public class ASTNode {
 
     private final NodeType type;
-    //private final String value;
     private final List<ASTNode> children;
     private final JsonNode raw;
     
@@ -20,7 +19,6 @@ public class ASTNode {
      */
     public ASTNode(NodeType type, JsonNode raw) {
         this.type = type;
-        //this.value = value;
         this.children = new ArrayList<>();
         this.raw = raw;
     }
@@ -107,7 +105,13 @@ public class ASTNode {
     public String getMemberExpression() {
         JsonNode callee = getCallee();
         if(callee == null) {
-            return null;
+            JsonNode object = raw.get("object").get("name");
+            if(object != null) {
+                String property = raw.get("property").get("name").asText();
+                return object.asText() + "." + property;
+            } else {
+                return null;
+            }
         }
         String object = callee.get("object").get("name").asText();
         String property = callee.get("property").get("name").asText();
@@ -144,6 +148,15 @@ public class ASTNode {
     public String getKind() {
         if(raw == null || !raw.has("kind")) return null;
         return raw.get("kind").asText();
+    }
+
+    /**
+     * Get the {@code name} of the node.
+     * @return the Acorn {@code name} as a string.
+     */
+    public String getName() {
+        if(raw == null || !raw.has("name")) return null;
+        return raw.get("name").asText();
     }
 
     /**

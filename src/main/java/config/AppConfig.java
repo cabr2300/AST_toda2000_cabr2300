@@ -39,7 +39,7 @@ public final class AppConfig {
     /**
      * The name of the Claude model being tested
      */
-    public static final String CLAUDE_MODEL = "claude-haiku-4-5-20251001";
+    public static final String CLAUDE_MODEL = "Haiku 4.5-20251001";
 
     /**
      * The location of the JSON file containing prompts used to query the LLMs

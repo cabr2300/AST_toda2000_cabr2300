@@ -67,6 +67,7 @@ public class TypeMapper {
             case "FunctionDeclaration" -> NodeType.FUNCTION_DECLARATION;
             case "WithStatement" -> NodeType.WITH_STATEMENT;
             case "ImportDeclaration" -> NodeType.IMPORT_DECLARATION;
+            case "Identifier" -> NodeType.IDENTIFIER;
             default -> null;
         };
     }
