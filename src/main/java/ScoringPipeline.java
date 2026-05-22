@@ -37,9 +37,13 @@ public class ScoringPipeline {
     private int countPenalties(ASTNode node, Context ctx) {
         int penalty = 0;
         for(DeprecationRule rule : rules) {
-            if(rule.matches(node, ctx)) {
-                System.out.println(rule.getReason());
-                penalty += 1;
+            try {
+                if(rule.matches(node, ctx)) {
+                    System.out.println(rule.getReason());
+                    penalty += 1;
+                }
+            } catch(Exception e) {
+                // skip node if AST structure is unexpected
             }
         }
         for(ASTNode child : node.getChildren()) {
@@ -59,7 +63,11 @@ public class ScoringPipeline {
             ctx.imports.putAll(imports);
         }
         if(node.getType() == NodeType.MEMBER_EXPRESSION) {
-            ctx.memberExpressions.add(node.getMemberExpression());
+            try {
+                ctx.memberExpressions.add(node.getMemberExpression());
+            } catch(Exception e) {
+                // skip node if AST structure is unexpected
+            }
         }
         for(ASTNode child : node.getChildren()) {
             populateContext(child, ctx);

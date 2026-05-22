@@ -92,6 +92,6 @@ public final class Conditions {
      * @return whether the provided params match.
      */
     public static NodeCondition deprecatedLifecycleMethod(String className, String methodName) {
-        return (node, ctx) -> node.getName().equals(methodName) && ctx.memberExpressions.contains(className);
+        return (node, ctx) -> Objects.equals(node.getName(), methodName) && ctx.memberExpressions.contains(className);
     }
 }

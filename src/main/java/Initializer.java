@@ -26,7 +26,7 @@ public class Initializer {
         ScoringPipeline pipeline = new ScoringPipeline();
 
         try {
-            String json = Files.readString(Paths.get("data/snippets.json"));
+            String json = Files.readString(Paths.get(config.AppConfig.SNIPPETS_JSON));
 
             // Map for LLMs and their scores
             Map<String, List<Integer>> models = new HashMap<>();
@@ -35,6 +35,11 @@ public class Initializer {
             List<Snippet> snippets = objectMapper.readValue(json, new TypeReference<List<Snippet>>() {});
             for(Snippet snippet : snippets) {
                 String parsed = parser.parse(snippet.code);
+                if (parsed == null) {
+                    System.out.println("Snippet " + snippet.id + " could not be parsed, skipping");
+                    System.out.println();
+                    continue;
+                }
                 ASTNode root = typeMapper.buildTree(parsed);
                 Context ctx = new Context();
                 int score = pipeline.score(root, ctx);

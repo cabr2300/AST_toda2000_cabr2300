@@ -157,7 +157,7 @@ public class SnippetCollector {
                 new com.fasterxml.jackson.core.type.TypeReference<List<String>>() {});
 
         SnippetCollector collector = new SnippetCollector();
-        collector.collect(models, prompts, "data/snippets2.json"); //TODO change to AppConfig file location after testing
+        collector.collect(models, prompts, AppConfig.SNIPPETS_JSON);
     }
 }
 

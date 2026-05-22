@@ -28,7 +28,6 @@ public class AcornParser {
 
         // Create node.js subprocess
         ProcessBuilder pb = new ProcessBuilder("node", scriptPath);
-        pb.redirectErrorStream(true);
         Process process = pb.start();
 
         // Write jsSource to the process stdin
@@ -38,7 +37,8 @@ public class AcornParser {
 
         // Read the json AST back from the stdout
         String json = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-        process.waitFor();
+        int exitCode = process.waitFor();
+        if (exitCode != 0) return null;
         return json;
     }
 }
