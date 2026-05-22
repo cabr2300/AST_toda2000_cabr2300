@@ -18,23 +18,7 @@ public final class RuleBook {
      */
     public static List<DeprecationRule> getRules() {
         return List.of(
-             
-            new DeprecationRule(NodeType.VARIABLE_DECLARATION, Conditions.deprecatedKind("var"),"var is deprecated, use let or const"), // TO REMOVE: var is not formally deprecated.
-            new DeprecationRule(NodeType.FUNCTION_DECLARATION, "prefer arrow functions in modern JS"), // TO REMOVE: arrow functions is not formally deprecated.
             new DeprecationRule(NodeType.WITH_STATEMENT,"With statement considered bad practice"),
-
-            new DeprecationRule(NodeType.CALL_EXPRESSION, // TO REMOVE: eval or window.eval is not formally deprecated.
-                    Conditions.deprecatedStandardMethod("eval", "window.eval"),
-                    "Avoid using eval()"),
-
-            new DeprecationRule(NodeType.IMPORT_DECLARATION, // TO REMOVE: left-pad was unpublished from npm in 2016 (the Kik incident), not formally deprecated by TC39, MDN, or Node.js.
-                    Conditions.deprecatedModule("left-pad"),
-                    "left-pad is deprecated"),
-
-            new DeprecationRule(NodeType.CALL_EXPRESSION, // TO REMOVE: fs.existsSync is not deprecated. No DEP entry. Actively maintained.
-                    Conditions.deprecatedImportedMethod("fs", "existsSync"),
-                    "fs.existsSync is considered bad practice"),
-
 
             // -- Browser / Web Platform --
             new DeprecationRule(NodeType.CALL_EXPRESSION,
