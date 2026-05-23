@@ -132,6 +132,7 @@ public class SnippetCollector {
      */
     public void collect(List<String> models, List<String> prompts, String outputPath) throws IOException, InterruptedException {
         ArrayNode results = objectMapper.createArrayNode();
+        System.out.println("Querying models...");
         int id = 1;
         for (String model : models) {
             for (String prompt : prompts) {
@@ -145,6 +146,7 @@ public class SnippetCollector {
             }
         }
         String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(results);
+        System.out.println("Writing to file...");
         Files.writeString(Paths.get(outputPath), json);
     }
 
