@@ -159,7 +159,6 @@ public final class RuleBook {
                     Conditions.deprecatedLifecycleMethod("React.Component", "componentWillMount"),
                     "componentWillMount is deprecated, use componentDidMount instead"),
 
-
             // -- React -- componentWillReceiveProps()
             new DeprecationRule(NodeType.IDENTIFIER,
                     Conditions.deprecatedLifecycleMethod("React.Component", "componentWillReceiveProps"),

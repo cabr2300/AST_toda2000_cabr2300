@@ -5,6 +5,7 @@ import java.util.Map;
  * Class for traversing an AST and giving it a binary score
  * based on whether it includes deprecated code or not.
  * @author Carl Broberg
+ * @author Tobias Danielsson
  */
 public class ScoringPipeline {
 

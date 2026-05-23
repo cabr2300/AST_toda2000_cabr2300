@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 /**
  * Class for parsing JavaScript code into an Abstract Search Tree.
  * @author Carl Broberg
+ * @author Tobias Danielsson
  */
 public class AcornParser {
 
