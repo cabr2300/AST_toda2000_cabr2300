@@ -167,7 +167,53 @@ public final class RuleBook {
             // -- React -- componentWillUpdate()
             new DeprecationRule(NodeType.IDENTIFIER,
                     Conditions.deprecatedLifecycleMethod("React.Component", "componentWillUpdate"),
-                    "componentWillUpdate is deprecated, use getSnapshotBeforeUpdate instead")
+                    "componentWillUpdate is deprecated, use getSnapshotBeforeUpdate instead"),
+
+            /* ---------------------------------------------------------------------
+               Below: Not formally deprecated but not considered modern practice
+            --------------------------------------------------------------------- */
+            new DeprecationRule(NodeType.VARIABLE_DECLARATION,
+                    Conditions.deprecatedKind("var"),
+                    "var is deprecated, use let or const"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedStandardMethod("eval", "window.eval"),
+                    "eval() is a security risk and should be avoided"),
+
+            new DeprecationRule(NodeType.IMPORT_DECLARATION,
+                    Conditions.deprecatedModule("left-pad"),
+                    "left-pad is deprecated"),
+
+            /*
+            new DeprecationRule(NodeType.FUNCTION_EXPRESSION, "prefer arrow functions in modern JS"),*/
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("fs", "existsSync"),
+                    "fs.existsSync is considered bad practice"),
+
+            new DeprecationRule(NodeType.IMPORT_DECLARATION,
+                    Conditions.deprecatedModule("querystring"),
+                    "querystring module is deprecated, use URLSearchParams instead"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("react","createClass"),
+                    "React.createClass() is deprecated, use ES6 class or create-react-class instead"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("react-dom", "render"),
+                    "ReactDOM.render() is deprecated, use createRoot().render() instead"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("react-dom", "hydrate"),
+                    "ReactDOM.hydrate() is deprecated, use hydrateRoot() instead"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedImportedMethod("react-dom", "unmountComponentAtNode"),
+                    "ReactDOM.unmountComponentAtNode() is deprecated, use root.unmount() instead"),
+
+            new DeprecationRule(NodeType.CALL_EXPRESSION,
+                    Conditions.deprecatedStandardMethod("require"),
+                    "Modern JS prefers imports from ES Modules")
         );
     }
 }

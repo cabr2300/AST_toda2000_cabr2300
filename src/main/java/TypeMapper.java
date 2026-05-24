@@ -64,7 +64,7 @@ public class TypeMapper {
             case "VariableDeclaration" -> NodeType.VARIABLE_DECLARATION;
             case "CallExpression" -> NodeType.CALL_EXPRESSION;
             case "MemberExpression" -> NodeType.MEMBER_EXPRESSION;
-            case "FunctionDeclaration" -> NodeType.FUNCTION_DECLARATION;
+            case "FunctionExpression" -> NodeType.FUNCTION_EXPRESSION;
             case "WithStatement" -> NodeType.WITH_STATEMENT;
             case "ImportDeclaration" -> NodeType.IMPORT_DECLARATION;
             case "Identifier" -> NodeType.IDENTIFIER;

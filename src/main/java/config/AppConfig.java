@@ -14,12 +14,12 @@ public final class AppConfig {
     /**
      * The private API key used for the GPT API
      */
-    public static final String GPT_API_KEY = "api key placeholder"; //TODO replace with real key
+    public static final String GPT_API_KEY = "api-key-placeholder"; //TODO replace with real key
 
     /**
      * The private API key used for the Claude API
      */
-    public static final String CLAUDE_API_KEY = "api key placeholder"; //TODO replace with real key
+    public static final String CLAUDE_API_KEY = "api-key-placeholder"; //TODO replace with real key
 
     /**
      * The URL of the GPT API
