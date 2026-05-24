@@ -29,6 +29,12 @@ public class SnippetCollector {
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final ObjectMapper objectMapper = new ObjectMapper();
+    
+    private static final String OUTPUT_INSTRUCTION =
+            "Return only one complete JavaScript code snippet.\n" +
+            "Do not include explanations or Markdown.\n" +
+            "Prefer a concise solution, ideally under 40 lines.\n" +
+            "End the snippet with this exact comment: // END_SNIPPET";
 
     /**
      * Formulates a request adjusted to the LLM being prompted.
@@ -45,6 +51,7 @@ public class SnippetCollector {
 
         // Determine the LLM
         String[] modelArray = model.split("-");
+        String finalPrompt = prompt + "\n\n" + OUTPUT_INSTRUCTION;
 
         // Construct the request body
         String requestBody;
@@ -56,18 +63,18 @@ public class SnippetCollector {
                             .set("messages", objectMapper.createArrayNode()
                                     .add(objectMapper.createObjectNode()
                                             .put("role", "user")
-                                            .put("content", prompt)))
+                                            .put("content", finalPrompt)))
             );
         } else if (Objects.equals(modelArray[0], "claude")) {
             requestBody = objectMapper.writeValueAsString(
                     objectMapper.createObjectNode()
                             .put("model", model)
                             .put("temperature", 0)
-                            .put("max_tokens", 1024)
+                            .put("max_tokens", 2048)
                             .set("messages", objectMapper.createArrayNode()
                                     .add(objectMapper.createObjectNode()
                                             .put("role", "user")
-                                            .put("content", prompt)))
+                                            .put("content", finalPrompt)))
             );
         } else {
             System.err.println("Unknown LLM model");
@@ -140,10 +147,12 @@ public class SnippetCollector {
             for (String prompt : prompts) {
                 System.out.println("Fetching snippet " + id + "...");
                 String code = fetchSnippet(model, prompt);
+                boolean complete = code != null && code.contains("// END_SNIPPET");
                 ObjectNode entry = objectMapper.createObjectNode();
                 entry.put("id", id++);
                 entry.put("model", model);
                 entry.put("prompt", prompt);
+                entry.put("complete", complete);
                 entry.put("code", code);
                 results.add(entry);
             }

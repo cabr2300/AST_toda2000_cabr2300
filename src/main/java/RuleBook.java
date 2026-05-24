@@ -184,8 +184,7 @@ public final class RuleBook {
                     Conditions.deprecatedModule("left-pad"),
                     "left-pad is deprecated"),
 
-            /*
-            new DeprecationRule(NodeType.FUNCTION_EXPRESSION, "prefer arrow functions in modern JS"),*/
+            new DeprecationRule(NodeType.FUNCTION_EXPRESSION, "prefer arrow functions in modern JS"),
 
             new DeprecationRule(NodeType.CALL_EXPRESSION,
                     Conditions.deprecatedImportedMethod("fs", "existsSync"),
@@ -209,11 +208,12 @@ public final class RuleBook {
 
             new DeprecationRule(NodeType.CALL_EXPRESSION,
                     Conditions.deprecatedImportedMethod("react-dom", "unmountComponentAtNode"),
-                    "ReactDOM.unmountComponentAtNode() is deprecated, use root.unmount() instead"),
+                    "ReactDOM.unmountComponentAtNode() is deprecated, use root.unmount() instead")
 
+                /*
             new DeprecationRule(NodeType.CALL_EXPRESSION,
                     Conditions.deprecatedStandardMethod("require"),
-                    "Modern JS prefers imports from ES Modules")
+                    "Modern JS prefers imports from ES Modules") */
         );
     }
 }
