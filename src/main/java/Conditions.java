@@ -94,4 +94,13 @@ public final class Conditions {
     public static NodeCondition deprecatedLifecycleMethod(String className, String methodName) {
         return (node, ctx) -> Objects.equals(node.getName(), methodName) && ctx.memberExpressions.contains(className);
     }
+
+    /**
+     * The condition to confirm whether the node's parent is of a certain type.
+     * @param nodeType is the parent {@link NodeType} of the node being tested.
+     * @return whether the node type is a match.
+     */
+    public static NodeCondition deprecatedUnlessParentIs(NodeType nodeType) {
+        return (node, ctx) -> node.getParentType() != nodeType;
+    }
 }

@@ -11,16 +11,18 @@ public class ASTNode {
     private final NodeType type;
     private final List<ASTNode> children;
     private final JsonNode raw;
+    private final NodeType parentType;
     
     /**
      * Construct the AST node.
      * @param type the syntax category of the node.
      * @param raw the JsonNode containing the raw data
      */
-    public ASTNode(NodeType type, JsonNode raw) {
+    public ASTNode(NodeType type, JsonNode raw, NodeType parentType) {
         this.type = type;
         this.children = new ArrayList<>();
         this.raw = raw;
+        this.parentType = parentType;
     }
 
     /**
@@ -38,6 +40,12 @@ public class ASTNode {
     public NodeType getType() {
         return type;
     }
+
+    /**
+     * Get the type of the node's parent
+     * @return the {@link NodeType} of the parent
+     */
+    public NodeType getParentType() { return parentType; }
 
     /**
      * Get the node's children

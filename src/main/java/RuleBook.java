@@ -184,7 +184,9 @@ public final class RuleBook {
                     Conditions.deprecatedModule("left-pad"),
                     "left-pad is deprecated"),
 
-            new DeprecationRule(NodeType.FUNCTION_EXPRESSION, "prefer arrow functions in modern JS"),
+            new DeprecationRule(NodeType.FUNCTION_EXPRESSION,
+                    Conditions.deprecatedUnlessParentIs(NodeType.METHOD_DEFINITION),
+                    "prefer arrow functions in modern JS"),
 
             new DeprecationRule(NodeType.CALL_EXPRESSION,
                     Conditions.deprecatedImportedMethod("fs", "existsSync"),

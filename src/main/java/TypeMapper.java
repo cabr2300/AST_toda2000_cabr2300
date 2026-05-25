@@ -23,7 +23,7 @@ public class TypeMapper {
      */
     public ASTNode buildTree(String json) throws JsonProcessingException {
         JsonNode root = objectMapper.readTree(json);
-        return buildNode(root);
+        return buildNode(root, null);
     }
 
     /**
@@ -31,22 +31,22 @@ public class TypeMapper {
      * @param jsonNode is the current JsonNode.
      * @return an {@link ASTNode}, or {@code null} if the node has no type.
      */
-    private ASTNode buildNode(JsonNode jsonNode) {
+    private ASTNode buildNode(JsonNode jsonNode, NodeType parentType) {
         if(jsonNode == null || !jsonNode.isObject() || !jsonNode.has("type")) {
             return null;
         }
         String type = jsonNode.get("type").asText();
         NodeType nodeType = mapType(type);
-        ASTNode node = new ASTNode(nodeType, jsonNode);
+        ASTNode node = new ASTNode(nodeType, jsonNode, parentType);
         Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
         while(fields.hasNext()) {
             JsonNode child = fields.next().getValue();
             if(child.isObject()) {
-                ASTNode childNode = buildNode(child);
+                ASTNode childNode = buildNode(child, nodeType);
                 if(childNode != null) node.addChild(childNode);
             } else if(child.isArray()) {
                 for(JsonNode element : child) {
-                    ASTNode childNode = buildNode(element);
+                    ASTNode childNode = buildNode(element, nodeType);
                     if(childNode != null) node.addChild(childNode);
                 }
             }
@@ -68,6 +68,7 @@ public class TypeMapper {
             case "WithStatement" -> NodeType.WITH_STATEMENT;
             case "ImportDeclaration" -> NodeType.IMPORT_DECLARATION;
             case "Identifier" -> NodeType.IDENTIFIER;
+            case "MethodDefinition" -> NodeType.METHOD_DEFINITION;
             default -> null;
         };
     }
