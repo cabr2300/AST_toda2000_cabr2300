@@ -1,5 +1,7 @@
 package config;
 
+import java.util.List;
+
 /**
  * Configurations class for LLM API communication and data storage.
  * @author Carl Broberg
@@ -32,12 +34,14 @@ public final class AppConfig {
     public static final String CLAUDE_API_URL = "https://api.anthropic.com/v1/messages";
 
     /**
-     * The name of the models being tested
+     * The names of the models being tested
      */
-    public static final String GPT_MODEL_NANO = "gpt-5.4-nano-2026-03-17";
-    public static final String GPT_MODEL = "gpt-5.4-2026-03-05";
-    public static final String CLAUDE_MODEL_HAIKU = "claude-haiku-4-5-20251001";
-    public static final String CLAUDE_MODEL_SONNET = "claude-sonnet-4-6";
+    public static final List<String> MODELS = List.of(
+            "gpt-5.4-nano-2026-03-17",
+            "gpt-5.4-2026-03-05",
+            "claude-haiku-4-5-20251001",
+            "claude-sonnet-4-6"
+    );
 
     /**
      * The location of the JSON file containing prompts used to query the LLMs

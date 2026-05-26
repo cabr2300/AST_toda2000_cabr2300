@@ -1,3 +1,8 @@
+package evaluator;
+
+import mapper.ASTNode;
+import mapper.NodeType;
+
 import java.util.List;
 import java.util.Map;
 

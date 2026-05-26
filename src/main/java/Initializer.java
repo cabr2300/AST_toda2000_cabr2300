@@ -1,6 +1,13 @@
+import collector.SnippetCollector;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import config.AppConfig;
+
+import mapper.ASTNode;
+import evaluator.Context;
+import evaluator.ScoringPipeline;
+import mapper.TypeMapper;
+import parser.AcornParser;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -19,6 +26,31 @@ public class Initializer {
      */
     public Initializer() {
 
+        Scanner scanner = new Scanner(System.in);
+
+        while(true) {
+            System.out.println("""
+                    
+                    Press key to continue:
+                    C - collect snippets
+                    S - score collected snippets
+                    Or press any other key to exit.""");
+            String input = scanner.nextLine().toLowerCase();
+            if(input.equals("c")) {
+                try {
+                    fetchSnippets();
+                } catch (Exception e) {
+                    System.out.println("ERROR: Snippet collection failed");
+                }
+            } else if(input.equals("s")) {
+                parseAndScore();
+            } else {
+                break;
+            }
+        }
+    }
+
+    private void parseAndScore() {
         AcornParser parser = new AcornParser();
         TypeMapper typeMapper = new TypeMapper();
         ScoringPipeline pipeline = new ScoringPipeline();
@@ -36,7 +68,7 @@ public class Initializer {
                 Map<String, List<Integer>> models = new HashMap<>();
 
                 ObjectMapper objectMapper = new ObjectMapper();
-                List<Snippet> snippets = objectMapper.readValue(json, new TypeReference<List<Snippet>>() {});
+                List<Snippet> snippets = objectMapper.readValue(json, new TypeReference<>() {});
                 for(Snippet snippet : snippets) {
                     String parsed = parser.parse(snippet.code);
                     if (parsed == null) {
@@ -68,6 +100,19 @@ public class Initializer {
         for(String result : results) {
             System.out.println(result);
         }
+    }
 
+    private void fetchSnippets() throws Exception {
+        List<String> promptFiles = List.of(AppConfig.PROMPTS_BASELINE_JSON, AppConfig.PROMPTS_RECENCY_JSON);
+        for(String promptFile : promptFiles) {
+            String snippetFile = Objects.equals(promptFile, AppConfig.PROMPTS_BASELINE_JSON) ?
+                    AppConfig.SNIPPETS_BASELINE_JSON : AppConfig.SNIPPETS_RECENCY_JSON;
+            String promptsJson = Files.readString(Paths.get(promptFile));
+            List<String> prompts = new ObjectMapper().readValue(promptsJson,
+                    new com.fasterxml.jackson.core.type.TypeReference<>() {});
+            SnippetCollector collector = new SnippetCollector();
+            System.out.println("Collecting snippets for: " + snippetFile);
+            collector.collect(AppConfig.MODELS, prompts, snippetFile);
+        }
     }
 }

@@ -1,4 +1,7 @@
+package mapper;
+
 import com.fasterxml.jackson.databind.JsonNode;
+import evaluator.ImportInfo;
 
 import java.util.*;
 

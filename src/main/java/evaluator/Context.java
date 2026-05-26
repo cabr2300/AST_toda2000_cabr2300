@@ -1,3 +1,5 @@
+package evaluator;
+
 import java.util.*;
 
 /**
@@ -6,6 +8,6 @@ import java.util.*;
  * @author Carl Broberg
  */
 public class Context {
-    Map<String, ImportInfo> imports = new HashMap<>();
-    List<String> memberExpressions = new ArrayList<>();
+    public Map<String, ImportInfo> imports = new HashMap<>();
+    public List<String> memberExpressions = new ArrayList<>();
 }

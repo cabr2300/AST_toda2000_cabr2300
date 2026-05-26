@@ -1,3 +1,5 @@
+package mapper;
+
 /**
  * Represents the categories of syntax patterns that the AST scoring pipeline recognizes.
  * A pattern may or may not be associated with a deprecation rule.

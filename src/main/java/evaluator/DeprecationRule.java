@@ -1,3 +1,8 @@
+package evaluator;
+
+import mapper.ASTNode;
+import mapper.NodeType;
+
 /**
  * Represents a rule for code deprecation.
  * @author Carl Broberg
@@ -20,7 +25,7 @@ public class DeprecationRule {
     }
 
     /**
-     * Overloaded class constructor including a custom NodeCondition.
+     * Overloaded class constructor including a custom evaluator.NodeCondition.
      * @param pattern is a {@link NodeType} specifying a code pattern.
      * @param reason is a string explaining why the pattern is deprecated.
      * @param condition is a special condition that must be fulfilled for the deprecation rule to be valid.

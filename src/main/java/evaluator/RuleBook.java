@@ -1,3 +1,7 @@
+package evaluator;
+
+import mapper.NodeType;
+
 import java.util.List;
 
 /**
@@ -213,8 +217,8 @@ public final class RuleBook {
                     "ReactDOM.unmountComponentAtNode() is deprecated, use root.unmount() instead")
 
                 /*
-            new DeprecationRule(NodeType.CALL_EXPRESSION,
-                    Conditions.deprecatedStandardMethod("require"),
+            new evaluator.DeprecationRule(mapper.NodeType.CALL_EXPRESSION,
+                    evaluator.Conditions.deprecatedStandardMethod("require"),
                     "Modern JS prefers imports from ES Modules") */
         );
     }

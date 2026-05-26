@@ -1,3 +1,5 @@
+package evaluator;
+
 /**
  * Record for keeping track of by what name an imported module is used in the code.
  * Used to keep track of aliases and wildcard imports.
