@@ -33,6 +33,7 @@ public class SnippetCollector {
     private static final String OUTPUT_INSTRUCTION =
             "Return only one complete JavaScript code snippet.\n" +
             "Do not include explanations or Markdown.\n" +
+            "Do not use TypeScript.\n" +
             "Prefer a concise solution, ideally under 40 lines.\n" +
             "End the snippet with this exact comment: // END_SNIPPET";
 
