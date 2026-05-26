@@ -164,14 +164,23 @@ public class SnippetCollector {
 
     //TODO remove and integrate with Initializer
     public static void main(String[] args) throws Exception {
-        List<String> models = List.of(AppConfig.GPT_MODEL, AppConfig.CLAUDE_MODEL);
+        List<String> models = List.of(
+                AppConfig.GPT_MODEL_NANO,
+                AppConfig.GPT_MODEL,
+                AppConfig.CLAUDE_MODEL_HAIKU,
+                AppConfig.CLAUDE_MODEL_SONNET);
 
-        String promptsJson = Files.readString(Paths.get(AppConfig.PROMPTS_JSON));
-        List<String> prompts = new ObjectMapper().readValue(promptsJson,
-                new com.fasterxml.jackson.core.type.TypeReference<List<String>>() {});
-
-        SnippetCollector collector = new SnippetCollector();
-        collector.collect(models, prompts, AppConfig.SNIPPETS_JSON);
+        List<String> promptFiles = List.of(AppConfig.PROMPTS_BASELINE_JSON, AppConfig.PROMPTS_RECENCY_JSON);
+        for(String promptFile : promptFiles) {
+            String snippetFile = Objects.equals(promptFile, AppConfig.PROMPTS_BASELINE_JSON) ?
+                    AppConfig.SNIPPETS_BASELINE_JSON : AppConfig.SNIPPETS_RECENCY_JSON;
+            String promptsJson = Files.readString(Paths.get(promptFile));
+            List<String> prompts = new ObjectMapper().readValue(promptsJson,
+                    new com.fasterxml.jackson.core.type.TypeReference<List<String>>() {});
+            SnippetCollector collector = new SnippetCollector();
+            System.out.println("Collecting snippets for: " + snippetFile);
+            collector.collect(models, prompts, snippetFile);
+        }
     }
 }
 

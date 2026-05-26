@@ -1,541 +1,1081 @@
 [ {
   "id" : 1,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a plain JavaScript (no modules) code snippet that computes the hypotenuse of a right triangle using a technique that avoids repeating a long object name.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "const triangle = {\n  sideA: 3,\n  sideB: 4\n};\n\nconst { sideA: a, sideB: b } = triangle;\nconst hypotenuse = Math.hypot(a, b);\n\nconsole.log(hypotenuse);\n\n// END_SNIPPET"
+  "code" : "const triangle = { a: 3, b: 4 };\nconst { a, b } = triangle;\nconst hypotenuse = Math.hypot(a, b);\nconsole.log(hypotenuse);\n// END_SNIPPET"
 }, {
   "id" : 2,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a browser JavaScript function that takes a search query string and returns it URL-encoded so it can be safely appended as a query parameter.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "function encodeSearchQuery(query) {\n  return encodeURIComponent(String(query));\n}\n// END_SNIPPET"
+  "code" : "function encodeQueryParam(query) {\n  if (query === null || query === undefined) return '';\n  return encodeURIComponent(String(query));\n}\n// END_SNIPPET"
 }, {
   "id" : 3,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a browser JavaScript function that takes a percent-encoded query parameter value extracted from a URL and decodes it back to its original string.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "function decodeQueryParamValue(value) {\n  if (value == null) return \"\";\n  try {\n    return decodeURIComponent(String(value).replace(/\\+/g, \" \"));\n  } catch {\n    return String(value).replace(/\\+/g, \" \");\n  }\n}\n// END_SNIPPET"
+  "code" : "function decodeQueryParamValue(encodedValue) {\n  if (encodedValue == null) return \"\";\n  const s = String(encodedValue);\n  try {\n    return decodeURIComponent(s.replace(/\\+/g, \"%20\"));\n  } catch (e) {\n    try {\n      return decodeURIComponent(s);\n    } catch (e2) {\n      return s;\n    }\n  }\n}\n// END_SNIPPET"
 }, {
   "id" : 4,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write browser JavaScript that adds an <h1> greeting to the page. The script runs inline inside the HTML <body> while the page is still loading.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "const h1 = document.createElement('h1');\nh1.textContent = 'Hello!';\ndocument.body.appendChild(h1);\n// END_SNIPPET"
+  "code" : "(() => {\n  const h1 = document.createElement('h1');\n  h1.textContent = 'Hello!';\n  document.body.appendChild(h1);\n})(); // END_SNIPPET"
 }, {
   "id" : 5,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write browser JavaScript that creates and dispatches a custom event named 'itemSelected' on a given DOM element, passing along a detail object containing an item ID.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "function dispatchItemSelected(element, itemId) {\n  if (!element || typeof element.dispatchEvent !== \"function\") {\n    throw new TypeError(\"A valid DOM element is required.\");\n  }\n\n  const event = new CustomEvent(\"itemSelected\", {\n    detail: { itemId },\n    bubbles: true,\n    cancelable: true,\n    composed: true\n  });\n\n  element.dispatchEvent(event);\n  return event;\n}\n\n// END_SNIPPET"
+  "code" : "function dispatchItemSelected(el, itemId) {\n  if (!el || typeof el.dispatchEvent !== 'function') return false;\n  const evt = new CustomEvent('itemSelected', { detail: { itemId } });\n  el.dispatchEvent(evt);\n  return true;\n} // END_SNIPPET"
 }, {
   "id" : 6,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write browser JavaScript for a Copy button that, when clicked, copies the text content of a <p> element to the user's clipboard.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "document.addEventListener('DOMContentLoaded', () => {\n  const copyButton = document.querySelector('button');\n  const paragraph = document.querySelector('p');\n\n  if (!copyButton || !paragraph) return;\n\n  copyButton.addEventListener('click', async () => {\n    const text = paragraph.textContent || '';\n    try {\n      await navigator.clipboard.writeText(text);\n    } catch {\n      const textarea = document.createElement('textarea');\n      textarea.value = text;\n      textarea.style.position = 'fixed';\n      textarea.style.opacity = '0';\n      document.body.appendChild(textarea);\n      textarea.focus();\n      textarea.select();\n      document.execCommand('copy');\n      document.body.removeChild(textarea);\n    }\n  });\n}); // END_SNIPPET"
+  "code" : "document.addEventListener('click', async (e) => {\n  const btn = e.target.closest('[data-copy-target], [data-copy], .copy-btn, button.copy');\n  if (!btn) return;\n\n  const sel = btn.getAttribute('data-copy-target') || btn.getAttribute('data-copy');\n  let p = null;\n\n  if (sel) p = document.querySelector(sel);\n  if (!p) {\n    const container = btn.closest('p, .copy-container, .field, form, article, section') || document;\n    p = container.querySelector('p');\n  }\n  if (!p) return;\n\n  const text = (p.textContent || '').trim();\n  if (!text) return;\n\n  try {\n    await navigator.clipboard.writeText(text);\n  } catch (_) {\n    const ta = document.createElement('textarea');\n    ta.value = text;\n    ta.setAttribute('readonly', '');\n    ta.style.position = 'fixed';\n    ta.style.left = '-9999px';\n    document.body.appendChild(ta);\n    ta.select();\n    document.execCommand('copy');\n    document.body.removeChild(ta);\n  }\n}); \n// END_SNIPPET"
 }, {
   "id" : 7,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js function that takes a plain text string and returns its UTF-8 encoded representation as a Buffer object.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "function toUtf8Buffer(text) {\n  return Buffer.from(String(text), 'utf8');\n}\n// END_SNIPPET"
+  "code" : "function utf8ToBuffer(text) {\n  return Buffer.from(String(text), 'utf8');\n}\n\n// END_SNIPPET"
 }, {
   "id" : 8,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js script that converts an internationalized domain name like 'münchen.de' to its Punycode ASCII-compatible encoding (ACE) form.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "const punycode = require('punycode/');\n\nfunction toACE(domain) {\n  return domain\n    .split('.')\n    .map(label => /[^\\x00-\\x7F]/.test(label) ? 'xn--' + punycode.encode(label) : label)\n    .join('.');\n}\n\nconst input = 'münchen.de';\nconsole.log(toACE(input));\n\n// END_SNIPPET"
+  "code" : "const punycode = require('punycode/');\n\nfunction toACE(domain) {\n  if (typeof domain !== 'string') throw new TypeError('domain must be a string');\n  domain = domain.trim().replace(/\\.$/, '');\n  if (!domain) return '';\n  return domain\n    .split('.')\n    .map(label => (label ? punycode.toASCII(label) : label))\n    .join('.');\n}\n\nconst input = process.argv[2] || 'münchen.de';\nprocess.stdout.write(toACE(input)); \n// END_SNIPPET"
 }, {
   "id" : 9,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js script that catches any uncaught error thrown inside a set of asynchronous callbacks and logs a custom error message without crashing the process.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "process.on('uncaughtException', (err) => {\n  console.error('Custom error message:', err.message);\n});\n\nfunction runAsyncTasks() {\n  setTimeout(() => {\n    throw new Error('Error in timeout callback');\n  }, 100);\n\n  setImmediate(() => {\n    throw new Error('Error in immediate callback');\n  });\n\n  process.nextTick(() => {\n    throw new Error('Error in nextTick callback');\n  });\n}\n\nrunAsyncTasks();\n\nsetTimeout(() => {\n  console.log('Process is still running.');\n}, 300);\n\n// END_SNIPPET"
+  "code" : "const process = require('process');\n\nprocess.on('uncaughtException', (err) => {\n  console.error('Custom error: uncaught exception in async callback:', err && err.stack ? err.stack : err);\n});\n\nprocess.on('unhandledRejection', (reason) => {\n  console.error('Custom error: unhandled promise rejection in async callback:', reason && reason.stack ? reason.stack : reason);\n});\n\nprocess.on('warning', (w) => {\n  if (w && w.name === 'UnhandledPromiseRejectionWarning') {\n    console.error('Custom error: unhandled promise rejection warning:', w.message || w);\n  }\n});\n\n// Demo async callbacks (remove in real usage)\nsetTimeout(() => { throw new Error('boom from setTimeout'); }, 10);\nPromise.resolve().then(() => { throw new Error('boom from promise'); });\n\nsetInterval(() => {}, 1 << 30); // keep process alive\n// END_SNIPPET"
 }, {
   "id" : 10,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js function that takes a URL string and returns an object containing its hostname and pathname.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "function parseUrlParts(urlString) {\n  const u = new URL(urlString);\n  return {\n    hostname: u.hostname,\n    pathname: u.pathname\n  };\n} // END_SNIPPET"
+  "code" : "function getHostAndPath(urlString) {\n  const u = new URL(urlString);\n  return { hostname: u.hostname, pathname: u.pathname };\n}\n// END_SNIPPET"
 }, {
   "id" : 11,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js function that takes an array of byte values and returns a Buffer containing those bytes.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "function bytesToBuffer(bytes) {\n  if (!Array.isArray(bytes)) throw new TypeError('Expected an array of byte values');\n  return Buffer.from(bytes);\n}\n// END_SNIPPET"
+  "code" : "function bytesToBuffer(bytes) {\n  if (!Array.isArray(bytes)) throw new TypeError('Expected an array of byte values');\n  return Buffer.from(bytes.map(b => {\n    const n = Number(b);\n    if (!Number.isFinite(n)) throw new TypeError('Byte values must be finite numbers');\n    if (n < 0 || n > 255) throw new RangeError('Byte values must be in range 0..255');\n    return n;\n  }));\n}\n// END_SNIPPET"
 }, {
   "id" : 12,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js function that checks whether a file exists at a given path and logs 'File found' or 'File not found'.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "const fs = require('fs');\n\nfunction checkFileExists(filePath) {\n  fs.access(filePath, fs.constants.F_OK, (err) => {\n    if (err) {\n      console.log('File not found');\n    } else {\n      console.log('File found');\n    }\n  });\n}\n\n// Example usage:\n// checkFileExists('/path/to/file');\n\nmodule.exports = { checkFileExists }; // END_SNIPPET"
+  "code" : "const fs = require('fs');\nconst path = require('path');\n\nfunction checkFileExists(filePath) {\n  const p = path.resolve(String(filePath));\n  fs.access(p, fs.constants.F_OK, (err) => {\n    if (err) console.log('File not found');\n    else console.log('File found');\n  });\n}\n\n// Example usage:\n// checkFileExists('./somefile.txt');\n\nmodule.exports = { checkFileExists };\n// END_SNIPPET"
 }, {
   "id" : 13,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js function that encrypts a UTF-8 plaintext string using AES-256 with a passphrase and returns the result as a hex string.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "const crypto = require('crypto');\n\nfunction encryptUtf8Aes256Hex(plaintext, passphrase) {\n  const salt = crypto.randomBytes(16);\n  const iv = crypto.randomBytes(16);\n  const key = crypto.pbkdf2Sync(String(passphrase), salt, 100000, 32, 'sha256');\n  const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);\n  const ciphertext = Buffer.concat([cipher.update(String(plaintext), 'utf8'), cipher.final()]);\n  return Buffer.concat([salt, iv, ciphertext]).toString('hex');\n}\n\n// END_SNIPPET"
+  "code" : "const crypto = require('crypto');\n\nfunction encryptAes256Hex(plaintext, passphrase) {\n  const salt = crypto.randomBytes(16);\n  const iv = crypto.randomBytes(16);\n  const key = crypto.pbkdf2Sync(passphrase, salt, 100000, 32, 'sha256');\n\n  const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);\n  const ciphertext = Buffer.concat([cipher.update(Buffer.from(plaintext, 'utf8')), cipher.final()]);\n\n  return Buffer.concat([Buffer.from('v1'), salt, iv, ciphertext]).toString('hex');\n}\n\n// END_SNIPPET"
 }, {
   "id" : 14,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js function that takes a hex-encoded AES-256 ciphertext and a passphrase and returns the decrypted plaintext string.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "const crypto = require('crypto');\n\nfunction decryptAes256Hex(cipherHex, passphrase) {\n  const data = Buffer.from(cipherHex, 'hex');\n  if (data.length < 17) throw new Error('Invalid ciphertext');\n\n  const salt = data.subarray(0, 8);\n  const iv = data.subarray(8, 16);\n  const ciphertext = data.subarray(16);\n\n  const keyIv = crypto.pbkdf2Sync(Buffer.from(passphrase, 'utf8'), salt, 100000, 48, 'sha256');\n  const key = keyIv.subarray(0, 32);\n\n  const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);\n  const plaintext = Buffer.concat([decipher.update(ciphertext), decipher.final()]);\n  return plaintext.toString('utf8');\n}\n\nmodule.exports = { decryptAes256Hex }; // END_SNIPPET"
+  "code" : "const crypto = require('crypto');\n\nfunction decryptAes256Hex(cipherHex, passphrase) {\n  const buf = Buffer.from(cipherHex, 'hex');\n  if (buf.length < 17) throw new Error('Ciphertext too short');\n  const salt = buf.subarray(0, 16);\n  const iv = buf.subarray(16, 32);\n  const ciphertext = buf.subarray(32);\n\n  const key = crypto.pbkdf2Sync(passphrase, salt, 100000, 32, 'sha256');\n  const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);\n  const plaintext = Buffer.concat([decipher.update(ciphertext), decipher.final()]);\n  return plaintext.toString('utf8');\n}\n\n// END_SNIPPET"
 }, {
   "id" : 15,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is an array, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "function isArray(value) {\n  return Array.isArray(value);\n}\n// END_SNIPPET"
+  "code" : "function isArrayValue(value) {\n  return Array.isArray(value);\n}\n// END_SNIPPET"
 }, {
   "id" : 16,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a boolean (true or false), false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "function isBoolean(value) {\n  return typeof value === 'boolean';\n}\n// END_SNIPPET"
+  "code" : "function isBoolean(value) {\n  return value === true || value === false;\n}\n// END_SNIPPET"
 }, {
   "id" : 17,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a Buffer instance, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "function isBuffer(value) {\n  return Buffer.isBuffer(value);\n}\n\n// END_SNIPPET"
+  "code" : "function isBufferValue(value) {\n  return Buffer.isBuffer(value);\n}\n// END_SNIPPET"
 }, {
   "id" : 18,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a Date object, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "function isDate(value) {\n  return value instanceof Date && !isNaN(value.getTime());\n}\n// END_SNIPPET"
+  "code" : "function isDateObject(value) {\n  return value instanceof Date;\n}\n// END_SNIPPET"
 }, {
   "id" : 19,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is an Error instance, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "function isError(value) {\n  return value instanceof Error || Object.prototype.toString.call(value) === '[object Error]';\n}\n// END_SNIPPET"
+  "code" : "function isErrorInstance(value) {\n  return value instanceof Error;\n}\n// END_SNIPPET"
 }, {
   "id" : 20,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a function, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "function isFunction(value) {\n  return typeof value === 'function';\n}\n// END_SNIPPET"
 }, {
   "id" : 21,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is null, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "function isNull(value) {\n  return value === null;\n}\n// END_SNIPPET"
 }, {
   "id" : 22,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a number (including NaN), false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "function isNumber(value) {\n  return typeof value === 'number';\n}\n// END_SNIPPET"
+  "code" : "function isNumberIncludingNaN(value) {\n  return typeof value === 'number' && Number.isNaN(value) ? true : typeof value === 'number';\n}\n// END_SNIPPET"
 }, {
   "id" : 23,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a string, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "function isString(value) {\n  return typeof value === 'string' || value instanceof String;\n}\n// END_SNIPPET"
 }, {
   "id" : 24,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is undefined, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "function isUndefined(value) {\n  return value === undefined;\n}\n// END_SNIPPET"
 }, {
   "id" : 25,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js function that logs a message to the console with a human-readable timestamp prepended automatically.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "function logWithTimestamp(message) {\n  const now = new Date();\n  const timestamp = now.toLocaleString('en-US', {\n    year: 'numeric',\n    month: '2-digit',\n    day: '2-digit',\n    hour: '2-digit',\n    minute: '2-digit',\n    second: '2-digit',\n    hour12: false\n  });\n  console.log(`[${timestamp}] ${message}`);\n}\n\nlogWithTimestamp('Hello, world!');\n// END_SNIPPET"
+  "code" : "function logWithTimestamp(message) {\n  const d = new Date();\n  const pad = (n) => String(n).padStart(2, '0');\n  const ts = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;\n  console.log(`[${ts}] ${message}`);\n}\n\n// Example usage:\n// logWithTimestamp(\"Hello, world!\");\n// END_SNIPPET"
 }, {
   "id" : 26,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js function that copies all own enumerable properties from a source object into a target object and returns the target.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "function copyOwnEnumerableProperties(target, source) {\n  if (target == null) throw new TypeError('target must not be null or undefined');\n  if (source == null) return target;\n  for (const key in source) {\n    if (Object.prototype.hasOwnProperty.call(source, key)) {\n      target[key] = source[key];\n    }\n  }\n  return target;\n}\n// END_SNIPPET"
+  "code" : "function copyOwnEnumerableProperties(source, target) {\n  if (source == null) throw new TypeError('source must be an object');\n  if (target == null) throw new TypeError('target must be an object');\n  for (const key of Object.keys(source)) {\n    target[key] = source[key];\n  }\n  return target;\n}\n// END_SNIPPET"
 }, {
   "id" : 27,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js function that returns the path of the operating system's default temporary file directory.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "const os = require('os');\nconst path = require('path');\n\nfunction getDefaultTempDir() {\n  return os.tmpdir();\n}\n\nmodule.exports = getDefaultTempDir;\n// END_SNIPPET"
+  "code" : "const os = require('os');\nconst path = require('path');\n\nfunction getDefaultTempDir() {\n  const dir = os.tmpdir();\n  return dir ? path.resolve(dir) : process.cwd();\n}\n\n// Example usage:\n// console.log(getDefaultTempDir());\n\nmodule.exports = getDefaultTempDir;\n\n// END_SNIPPET"
 }, {
   "id" : 28,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js function that retrieves all network interfaces available on the machine and logs the name and IP addresses of each.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "const os = require('os');\n\nfunction logNetworkInterfaces() {\n  const interfaces = os.networkInterfaces();\n\n  for (const [name, addrs] of Object.entries(interfaces)) {\n    console.log(`Interface: ${name}`);\n    for (const addr of addrs || []) {\n      console.log(`  ${addr.family} ${addr.address}${addr.internal ? ' (internal)' : ''}`);\n    }\n  }\n}\n\nlogNetworkInterfaces();\n\n// END_SNIPPET"
+  "code" : "const os = require('os');\n\nfunction logNetworkInterfaces() {\n  const nets = os.networkInterfaces();\n  for (const [name, addrs] of Object.entries(nets)) {\n    if (!Array.isArray(addrs)) continue;\n    const ips = addrs\n      .filter(a => a && a.address && a.family === 'IPv4' && !a.internal)\n      .map(a => a.address);\n    console.log(`${name}: ${ips.length ? ips.join(', ') : '(no external IPv4)'}`);\n  }\n}\n\nlogNetworkInterfaces();\n// END_SNIPPET"
 }, {
   "id" : 29,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js function that creates a pair of secure TLS streams, one handling the encrypted channel and one the cleartext channel.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "const tls = require('tls');\nconst net = require('net');\n\nfunction createSecureTlsPair(options = {}) {\n  const server = tls.createServer(options);\n  const socket = new net.Socket({ allowHalfOpen: false });\n  const encrypted = socket;\n  let cleartext;\n\n  server.on('secureConnection', (tlsSocket) => {\n    cleartext = tlsSocket;\n  });\n\n  socket.connect(options.port || 0, options.host || '127.0.0.1');\n  return { encrypted, get cleartext() { return cleartext; }, server };\n}\n\nmodule.exports = { createSecureTlsPair };\n// END_SNIPPET"
+  "code" : "const tls = require('tls');\nconst net = require('net');\n\nfunction createTlsStreamPair(opts = {}) {\n  const {\n    serverOptions = {},\n    clientOptions = {},\n    serverHost = '127.0.0.1',\n    serverPort = 0,\n    serverSni,\n    clientSni,\n    serverALPN,\n    clientALPN,\n    serverCert,\n    serverKey,\n    clientCa,\n    rejectUnauthorized = true\n  } = opts;\n\n  const server = tls.createServer({\n    key: serverKey,\n    cert: serverCert,\n    ...serverOptions,\n    servername: serverSni,\n    ALPNProtocols: serverALPN\n  });\n\n  const client = tls.connect({\n    host: serverHost,\n    port: serverPort,\n    ca: clientCa,\n    rejectUnauthorized,\n    ...clientOptions,\n    servername: clientSni,\n    ALPNProtocols: clientALPN\n  });\n\n  return new Promise((resolve, reject) => {\n    server.on('error', reject);\n    client.on('error', reject);\n\n    server.listen(serverPort, serverHost, () => {\n      const port = server.address().port;\n      client.setServername(clientSni);\n      client.setDefaultEncoding('utf8');\n      client.connect({ host: serverHost, port });\n    });\n\n    server.once('secureConnection', (secureServerSocket) => {\n      const secureClientSocket = client;\n      const clearServer = new net.Socket();\n      const clearClient = new net.Socket();\n\n      let ready = 0;\n      const done = () => {\n        ready++;\n        if (ready === 2) resolve({ encrypted: { server: secureServerSocket, client: secureClientSocket }, cleartext: { server: clearServer, client: clearClient } });\n      };\n\n      clearServer.on('error', reject);\n      clearClient.on('error', reject);\n\n      // Pipe cleartext <-> encrypted endpoints (server side)\n      secureServerSocket.on('data', (d) => clearServer.write(d));\n      clearServer.on('data', (d) => secureServerSocket.write(d));\n      secureServerSocket.on('end', () => clearServer.end());\n      clearServer.on('end', () => secureServerSocket.end());\n\n      // Pipe cleartext <-> encrypted endpoints (client side)\n      secureClientSocket.on('data', (d) => clearClient.write(d));\n      clearClient.on('data', (d) => secureClientSocket.write(d));\n      secureClientSocket.on('end', () => clearClient.end());\n      clearClient.on('end', () => secureClientSocket.end());\n\n      // Mark sockets as \"ready\" once both TLS sides are established\n      secureServerSocket.once('data', () => done());\n      secureClientSocket.once('data', () => done());\n\n      // If no data arrives, still resolve after handshake\n      secureServerSocket.once('secureConnect', done);\n      secureClientSocket.once('secureConnect', done);\n    });\n  });\n}\n\nmodule.exports = { createTlsStreamPair };\n// END_SNIPPET"
 }, {
   "id" : 30,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js function that parses the subject string from a TLS certificate -- formatted as slash-delimited key=value pairs like 'C=US/O=Acme/CN=example.com' -- into a plain JavaScript object.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "function parseCertificateSubject(subject) {\n  const result = {};\n  if (typeof subject !== 'string' || !subject) return result;\n\n  let i = 0;\n  while (i < subject.length) {\n    if (subject[i] === '/') i++;\n    let key = '';\n    let value = '';\n    while (i < subject.length && subject[i] !== '=') key += subject[i++];\n    if (subject[i] !== '=') break;\n    i++;\n    while (i < subject.length && subject[i] !== '/') {\n      if (subject[i] === '\\\\' && i + 1 < subject.length) {\n        value += subject[i + 1];\n        i += 2;\n      } else {\n        value += subject[i++];\n      }\n    }\n    if (key) result[key] = value;\n  }\n  return result;\n}\n\n// END_SNIPPET"
+  "code" : "function parseTlsSubject(subject) {\n  if (typeof subject !== 'string') return {};\n  const s = subject.trim();\n  if (!s) return {};\n  const parts = s.split('/').filter(Boolean);\n  const obj = {};\n  for (const part of parts) {\n    const idx = part.indexOf('=');\n    if (idx === -1) continue;\n    const key = part.slice(0, idx).trim();\n    const value = part.slice(idx + 1).trim();\n    if (!key) continue;\n    if (Object.prototype.hasOwnProperty.call(obj, key)) {\n      const cur = obj[key];\n      obj[key] = Array.isArray(cur) ? (cur.push(value), cur) : [cur, value];\n    } else {\n      obj[key] = value;\n    }\n  }\n  return obj;\n}\n// END_SNIPPET"
 }, {
   "id" : 31,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a Node.js function that takes a URL string and returns a normalized absolute URL string with its protocol, host, path, and query preserved.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "function normalizeUrl(input) {\n  const base = 'http://example.com';\n  const u = new URL(input, base);\n\n  let protocol = u.protocol.toLowerCase();\n  let host = u.host.toLowerCase();\n  let pathname = u.pathname.replace(/\\/{2,}/g, '/');\n\n  if (pathname.length > 1 && pathname.endsWith('/')) pathname = pathname.slice(0, -1);\n\n  const result = new URL(protocol + '//' + host + pathname + u.search);\n  return result.toString();\n}\n// END_SNIPPET"
+  "code" : "function normalizeAbsoluteUrl(input) {\n  const url = new URL(input, 'http://localhost');\n  const protocol = url.protocol;\n  const host = url.host;\n  const pathname = url.pathname || '/';\n  const search = url.search || '';\n  return `${protocol}//${host}${pathname}${search}`;\n}\n// END_SNIPPET"
 }, {
   "id" : 32,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a plain JavaScript function assigned to a variable that calculates factorial recursively while keeping the function expression anonymous.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "const factorial = function(n) {\n  return n <= 1 ? 1 : n * arguments.callee(n - 1);\n}; // END_SNIPPET"
+  "code" : "const factorial = function(n) {\n  if (!Number.isInteger(n) || n < 0) throw new RangeError('n must be a non-negative integer');\n  if (n <= 1) return 1;\n  return n * factorial(n - 1);\n};\n// END_SNIPPET"
 }, {
   "id" : 33,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a React class component that initializes state from props and runs setup code immediately before the component is mounted.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "class MyComponent extends React.Component {\n  constructor(props) {\n    super(props);\n    this.state = {\n      value: props.initialValue,\n    };\n  }\n\n  componentWillMount() {\n    this.setup();\n  }\n\n  setup() {\n    // setup code here\n  }\n\n  render() {\n    return React.createElement('div', null, this.state.value);\n  }\n}\n// END_SNIPPET"
+  "code" : "import React from \"react\";\n\nclass MyComponent extends React.Component {\n  constructor(props) {\n    super(props);\n    this.state = { value: props.initialValue };\n  }\n\n  componentWillMount() {\n    this.setup();\n  }\n\n  componentDidMount() {\n    // If you need to ensure setup runs after mount, move/duplicate here.\n  }\n\n  setup() {\n    // setup code that runs immediately before mounting\n    if (this.props.onSetup) this.props.onSetup(this.state.value);\n  }\n\n  render() {\n    return <div>{this.state.value}</div>;\n  }\n}\n\nexport default MyComponent;\n// END_SNIPPET"
 }, {
   "id" : 34,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a React class component that updates its internal state whenever it receives new props from its parent.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "class PropSyncComponent extends React.Component {\n  constructor(props) {\n    super(props);\n    this.state = {\n      value: props.value\n    };\n  }\n\n  static getDerivedStateFromProps(nextProps, prevState) {\n    if (nextProps.value !== prevState.value) {\n      return { value: nextProps.value };\n    }\n    return null;\n  }\n\n  render() {\n    return React.createElement(\"div\", null, this.state.value);\n  }\n}\n// END_SNIPPET"
+  "code" : "import React from \"react\";\n\nclass PropSyncComponent extends React.Component {\n  constructor(props) {\n    super(props);\n    this.state = { value: props.value };\n  }\n\n  componentDidUpdate(prevProps) {\n    if (prevProps.value !== this.props.value) {\n      this.setState({ value: this.props.value });\n    }\n  }\n\n  render() {\n    return <div>{this.state.value}</div>;\n  }\n}\n\nexport default PropSyncComponent;\n// END_SNIPPET"
 }, {
   "id" : 35,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
   "prompt" : "Write a React class component that records the current scroll position immediately before it updates after props or state changes.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "import React from \"react\";\n\nclass ScrollRecorder extends React.Component {\n  constructor(props) {\n    super(props);\n    this.state = {};\n    this.scrollPosition = { x: 0, y: 0 };\n  }\n\n  getSnapshotBeforeUpdate(prevProps, prevState) {\n    this.scrollPosition = {\n      x: window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0,\n      y: window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0\n    };\n    return null;\n  }\n\n  componentDidUpdate(prevProps, prevState, snapshot) {\n    if (this.props.onScrollPosition) {\n      this.props.onScrollPosition(this.scrollPosition);\n    }\n  }\n\n  render() {\n    return this.props.children || null;\n  }\n}\n\nexport default ScrollRecorder; // END_SNIPPET"
+  "code" : "import React from \"react\";\n\nclass ScrollCapture extends React.Component {\n  constructor(props) {\n    super(props);\n    this.prevScrollY = null;\n  }\n\n  getSnapshotBeforeUpdate() {\n    return window.scrollY || window.pageYOffset || 0;\n  }\n\n  componentDidUpdate() {\n    this.prevScrollY = this.getSnapshotBeforeUpdate();\n  }\n\n  render() {\n    return this.props.children || null;\n  }\n}\n\nexport default ScrollCapture;\n// END_SNIPPET"
 }, {
   "id" : 36,
-  "model" : "gpt-5.4-mini",
+  "model" : "gpt-5.4-nano-2026-03-17",
+  "prompt" : "Write a JavaScript function that declares a counter variable, increments it, and returns the final value.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function incrementCounter() {\n  let counter = 0;\n  counter += 1;\n  return counter;\n}\n// END_SNIPPET"
+}, {
+  "id" : 37,
+  "model" : "gpt-5.4-nano-2026-03-17",
+  "prompt" : "Write a JavaScript function that takes a string containing a simple mathematical expression and returns the computed result.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function evaluateExpression(expr) {\n  if (typeof expr !== 'string') throw new TypeError('Expression must be a string');\n  const s = expr.replace(/\\s+/g, '');\n  if (!s) return 0;\n\n  if (!/^[0-9+\\-*/().]*$/.test(s)) throw new Error('Invalid characters');\n\n  const tokens = [];\n  let i = 0;\n  while (i < s.length) {\n    const c = s[i];\n    if (/[0-9.]/.test(c)) {\n      let j = i;\n      while (j < s.length && /[0-9.]/.test(s[j])) j++;\n      const numStr = s.slice(i, j);\n      if ((numStr.match(/\\./g) || []).length > 1) throw new Error('Invalid number');\n      tokens.push({ t: 'num', v: parseFloat(numStr) });\n      i = j;\n    } else if (c === '+' || c === '-' || c === '*' || c === '/' || c === '(' || c === ')') {\n      tokens.push({ t: 'op', v: c });\n      i++;\n    } else {\n      throw new Error('Invalid character');\n    }\n  }\n\n  const prec = { '+': 1, '-': 1, '*': 2, '/': 2 };\n  const out = [];\n  const ops = [];\n  let prevType = 'start';\n\n  for (const tok of tokens) {\n    if (tok.t === 'num') {\n      out.push(tok);\n      prevType = 'num';\n      continue;\n    }\n    const op = tok.v;\n\n    if (op === '(') {\n      ops.push(op);\n      prevType = '(';\n      continue;\n    }\n    if (op === ')') {\n      while (ops.length && ops[ops.length - 1] !== '(') out.push({ t: 'op', v: ops.pop() });\n      if (!ops.length) throw new Error('Mismatched parentheses');\n      ops.pop();\n      prevType = ')';\n      continue;\n    }\n\n    // unary minus\n    if (op === '-' && (prevType === 'start' || prevType === 'op' || prevType === '(')) {\n      out.push({ t: 'num', v: 0 });\n    }\n\n    while (ops.length) {\n      const top = ops[ops.length - 1];\n      if (top === '(') break;\n      if (prec[top] >= prec[op]) out.push({ t: 'op', v: ops.pop() });\n      else break;\n    }\n    ops.push(op);\n    prevType = 'op';\n  }\n\n  while (ops.length) {\n    const top = ops.pop();\n    if (top === '(') throw new Error('Mismatched parentheses');\n    out.push({ t: 'op', v: top });\n  }\n\n  const stack = [];\n  for (const tok of out) {\n    if (tok.t === 'num') stack.push(tok.v);\n    else {\n      const b = stack.pop();\n      const a = stack.pop();\n      if (a === undefined || b === undefined) throw new Error('Invalid expression');\n      switch (tok.v) {\n        case '+': stack.push(a + b); break;\n        case '-': stack.push(a - b); break;\n        case '*': stack.push(a * b); break;\n        case '/': stack.push(a / b); break;\n      }\n    }\n  }\n  if (stack.length !== 1) throw new Error('Invalid expression');\n  return stack[0];\n}\n// END_SNIPPET"
+}, {
+  "id" : 38,
+  "model" : "gpt-5.4-nano-2026-03-17",
+  "prompt" : "Write a Node.js script that pads a short string on the left with zeros until it reaches a specified length.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const fs = require('fs');\n\nconst input = fs.readFileSync(0, 'utf8').trim().split(/\\s+/);\nconst str = input[0] ?? '';\nconst len = parseInt(input[1] ?? '', 10);\n\nif (!Number.isFinite(len)) process.exit(1);\n\nconst out = String(str).padStart(len, '0');\nprocess.stdout.write(out);\n// END_SNIPPET"
+}, {
+  "id" : 39,
+  "model" : "gpt-5.4-nano-2026-03-17",
+  "prompt" : "Write a Node.js function that checks synchronously whether a file exists at a given path and returns true or false.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const fs = require('fs');\n\nfunction fileExistsSync(path) {\n  try {\n    return fs.existsSync(path);\n  } catch (_) {\n    return false;\n  }\n}\n\n// END_SNIPPET"
+}, {
+  "id" : 40,
+  "model" : "gpt-5.4-nano-2026-03-17",
+  "prompt" : "Write a Node.js function that parses a URL query string like \"name=Alex&age=30\" into key-value pairs.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function parseQueryString(qs) {\n  if (typeof qs !== 'string') return {};\n  qs = qs.startsWith('?') ? qs.slice(1) : qs;\n  if (!qs) return {};\n  return qs.split('&').reduce((acc, part) => {\n    if (!part) return acc;\n    const idx = part.indexOf('=');\n    const rawKey = idx === -1 ? part : part.slice(0, idx);\n    const rawVal = idx === -1 ? '' : part.slice(idx + 1);\n    const key = decodeURIComponent(rawKey.replace(/\\+/g, ' '));\n    const val = decodeURIComponent(rawVal.replace(/\\+/g, ' '));\n    acc[key] = val;\n    return acc;\n  }, {});\n}\n// END_SNIPPET"
+}, {
+  "id" : 41,
+  "model" : "gpt-5.4-nano-2026-03-17",
+  "prompt" : "Write a React component that stores a click count and increments it when a button is clicked.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "import React, { useState } from \"react\";\n\nexport default function ClickCounter() {\n  const [count, setCount] = useState(0);\n  return (\n    <div>\n      <p>Count: {count}</p>\n      <button onClick={() => setCount((c) => c + 1)}>Click</button>\n    </div>\n  );\n}\n// END_SNIPPET"
+}, {
+  "id" : 42,
+  "model" : "gpt-5.4-nano-2026-03-17",
+  "prompt" : "Write the React entry-point code that mounts an App component into a DOM element with the id \"root\".\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "import React from \"react\";\nimport { createRoot } from \"react-dom/client\";\nimport App from \"./App\";\n\nconst el = document.getElementById(\"root\");\nif (!el) throw new Error('Missing DOM element with id \"root\"');\n\ncreateRoot(el).render(\n  <React.StrictMode>\n    <App />\n  </React.StrictMode>\n);\n\n// END_SNIPPET"
+}, {
+  "id" : 43,
+  "model" : "gpt-5.4-nano-2026-03-17",
+  "prompt" : "Write the React entry-point code that hydrates a server-rendered App component into a DOM element with the id \"root\".\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "import React from \"react\";\nimport { hydrateRoot } from \"react-dom/client\";\nimport App from \"./App\";\n\nconst el = document.getElementById(\"root\");\nif (el) {\n  hydrateRoot(el, <App />);\n} else {\n  console.error('Root element with id \"root\" not found.');\n}\n// END_SNIPPET"
+}, {
+  "id" : 44,
+  "model" : "gpt-5.4-nano-2026-03-17",
+  "prompt" : "Write React code that unmounts an existing application from a DOM element after it is no longer needed.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function unmountReactApp(container) {\n  if (!container) return;\n  const root = container._reactRootContainer || container.__REACT_ROOT_CONTAINER__;\n  if (root && typeof root.unmount === \"function\") {\n    root.unmount();\n    return;\n  }\n  if (typeof window !== \"undefined\" && window.ReactDOM && window.ReactDOM.unmountComponentAtNode) {\n    window.ReactDOM.unmountComponentAtNode(container);\n  } else if (typeof window !== \"undefined\" && window.ReactDOMClient && window.ReactDOMClient.createRoot) {\n    // If using React 18 createRoot, store the root on the container when mounting.\n    const r = container.__reactRoot;\n    if (r && typeof r.unmount === \"function\") r.unmount();\n  }\n  container.innerHTML = \"\";\n}\n\n// Example mount helper (optional):\nfunction mountReactApp(container, element) {\n  if (!container) return;\n  if (window.ReactDOMClient && window.ReactDOMClient.createRoot) {\n    const root = window.ReactDOMClient.createRoot(container);\n    container.__reactRoot = root;\n    root.render(element);\n  } else if (window.ReactDOM && window.ReactDOM.render) {\n    window.ReactDOM.render(element, container);\n  }\n}\n\n// Usage:\n// mountReactApp(document.getElementById(\"app\"), <App />);\n// later: unmountReactApp(document.getElementById(\"app\"));\n\n// END_SNIPPET"
+}, {
+  "id" : 45,
+  "model" : "gpt-5.4-nano-2026-03-17",
+  "prompt" : "Write a JavaScript module that imports a helper function from another local file and uses it to transform an input value.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "import { transformValue } from \"./helper.js\";\n\nexport function transformInput(input) {\n  return transformValue(input);\n}\n\n// END_SNIPPET"
+}, {
+  "id" : 46,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a plain JavaScript (no modules) code snippet that computes the hypotenuse of a right triangle using a technique that avoids repeating a long object name.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "var calculator = {\n  geometry: {\n    rightTriangle: {\n      hypotenuse: function(a, b) {\n        return Math.sqrt(a * a + b * b);\n      }\n    }\n  }\n};\n\nwith (calculator.geometry.rightTriangle) {\n  var result = hypotenuse(3, 4);\n  console.log(result);\n}\n// END_SNIPPET"
+}, {
+  "id" : 47,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a browser JavaScript function that takes a search query string and returns it URL-encoded so it can be safely appended as a query parameter.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function encodeSearchQuery(query) {\n  return encodeURIComponent(String(query ?? \"\"));\n}\n// END_SNIPPET"
+}, {
+  "id" : 48,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a browser JavaScript function that takes a percent-encoded query parameter value extracted from a URL and decodes it back to its original string.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function decodeQueryParamValue(value) {\n  if (value == null) return '';\n  return decodeURIComponent(String(value).replace(/\\+/g, ' '));\n}\n\n// END_SNIPPET"
+}, {
+  "id" : 49,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write browser JavaScript that adds an <h1> greeting to the page. The script runs inline inside the HTML <body> while the page is still loading.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const h1 = document.createElement('h1');\nh1.textContent = 'Hello!';\ndocument.body.appendChild(h1);\n// END_SNIPPET"
+}, {
+  "id" : 50,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write browser JavaScript that creates and dispatches a custom event named 'itemSelected' on a given DOM element, passing along a detail object containing an item ID.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function dispatchItemSelected(element, itemId) {\n  if (!element || typeof element.dispatchEvent !== 'function') {\n    throw new Error('A valid DOM element is required.');\n  }\n\n  var event = new CustomEvent('itemSelected', {\n    bubbles: true,\n    cancelable: true,\n    detail: { itemId: itemId }\n  });\n\n  element.dispatchEvent(event);\n}\n\ndispatchItemSelected(document.getElementById('myElement'), 123); // END_SNIPPET"
+}, {
+  "id" : 51,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write browser JavaScript for a Copy button that, when clicked, copies the text content of a <p> element to the user's clipboard.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const button = document.querySelector('button');\nconst paragraph = document.querySelector('p');\n\nbutton?.addEventListener('click', async () => {\n  const text = paragraph?.textContent ?? '';\n  try {\n    await navigator.clipboard.writeText(text);\n  } catch {\n    const ta = document.createElement('textarea');\n    ta.value = text;\n    ta.style.position = 'fixed';\n    ta.style.opacity = '0';\n    document.body.appendChild(ta);\n    ta.select();\n    document.execCommand('copy');\n    ta.remove();\n  }\n});\n// END_SNIPPET"
+}, {
+  "id" : 52,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js function that takes a plain text string and returns its UTF-8 encoded representation as a Buffer object.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function toUtf8Buffer(text) {\n  return Buffer.from(String(text), 'utf8');\n}\n\n// END_SNIPPET"
+}, {
+  "id" : 53,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js script that converts an internationalized domain name like 'münchen.de' to its Punycode ASCII-compatible encoding (ACE) form.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const punycode = require('punycode/');\n\nconst input = process.argv[2] || 'münchen.de';\nconst ace = punycode.toASCII(input);\n\nconsole.log(ace);\n\n// END_SNIPPET"
+}, {
+  "id" : 54,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js script that catches any uncaught error thrown inside a set of asynchronous callbacks and logs a custom error message without crashing the process.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "process.on('uncaughtException', (err) => {\n  console.error('Custom error caught:', err && err.stack ? err.stack : err);\n});\n\nprocess.on('unhandledRejection', (reason) => {\n  console.error('Custom error caught:', reason && reason.stack ? reason.stack : reason);\n});\n\nconst callbacks = [\n  () => setTimeout(() => { throw new Error('Timer failure'); }, 10),\n  () => setImmediate(() => { throw new Error('Immediate failure'); }),\n  () => Promise.resolve().then(() => { throw new Error('Promise failure'); })\n];\n\nfor (const cb of callbacks) cb();\n\nsetInterval(() => {\n  console.log('Process still running');\n}, 1000);\n\n// END_SNIPPET"
+}, {
+  "id" : 55,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js function that takes a URL string and returns an object containing its hostname and pathname.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function parseUrlParts(url) {\n  const { hostname, pathname } = new URL(url);\n  return { hostname, pathname };\n}\n\n// END_SNIPPET"
+}, {
+  "id" : 56,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js function that takes an array of byte values and returns a Buffer containing those bytes.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function bytesToBuffer(bytes) {\n  return Buffer.from(bytes);\n}\n\n// END_SNIPPET"
+}, {
+  "id" : 57,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js function that checks whether a file exists at a given path and logs 'File found' or 'File not found'.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const fs = require('fs');\n\nfunction checkFileExists(filePath) {\n  fs.access(filePath, fs.constants.F_OK, (err) => {\n    console.log(err ? 'File not found' : 'File found');\n  });\n}\n\n// Example usage:\n// checkFileExists('./example.txt');\n\n// END_SNIPPET"
+}, {
+  "id" : 58,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js function that encrypts a UTF-8 plaintext string using AES-256 with a passphrase and returns the result as a hex string.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const crypto = require('crypto');\n\nfunction encryptToHex(plaintext, passphrase) {\n  const salt = crypto.randomBytes(16);\n  const key = crypto.scryptSync(passphrase, salt, 32);\n  const iv = crypto.randomBytes(16);\n  const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);\n  const encrypted = Buffer.concat([\n    cipher.update(plaintext, 'utf8'),\n    cipher.final()\n  ]);\n  return Buffer.concat([salt, iv, encrypted]).toString('hex');\n}\n\nmodule.exports = encryptToHex;\n\n// END_SNIPPET"
+}, {
+  "id" : 59,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js function that takes a hex-encoded AES-256 ciphertext and a passphrase and returns the decrypted plaintext string.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const crypto = require('crypto');\n\nfunction decryptAes256Hex(cipherHex, passphrase) {\n  const data = Buffer.from(cipherHex, 'hex');\n  if (data.length < 17) throw new Error('Invalid ciphertext');\n  const iv = data.subarray(0, 16);\n  const ciphertext = data.subarray(16);\n  const key = crypto.createHash('sha256').update(String(passphrase), 'utf8').digest();\n  const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);\n  const plaintext = Buffer.concat([decipher.update(ciphertext), decipher.final()]);\n  return plaintext.toString('utf8');\n}\n\n// END_SNIPPET"
+}, {
+  "id" : 60,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is an array, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function isArray(value) {\n  return Array.isArray(value);\n}\n\n// END_SNIPPET"
+}, {
+  "id" : 61,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a boolean (true or false), false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function isBoolean(value) {\n  return typeof value === 'boolean';\n}\n\n// END_SNIPPET"
+}, {
+  "id" : 62,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a Buffer instance, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function isBuffer(value) {\n  return Buffer.isBuffer(value);\n}\n\n// END_SNIPPET"
+}, {
+  "id" : 63,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a Date object, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function isDate(value) {\n  return value instanceof Date && !isNaN(value.getTime());\n}\n\n// END_SNIPPET"
+}, {
+  "id" : 64,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is an Error instance, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function isError(value) {\n  return value instanceof Error ||\n    Object.prototype.toString.call(value) === '[object Error]' ||\n    Object.prototype.toString.call(value) === '[object DOMException]';\n}\n\n// END_SNIPPET"
+}, {
+  "id" : 65,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a function, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function isFunction(value) {\n  return typeof value === 'function';\n}\n\n// END_SNIPPET"
+}, {
+  "id" : 66,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is null, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function isNull(value) {\n  return value === null;\n}\n\n// END_SNIPPET"
+}, {
+  "id" : 67,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a number (including NaN), false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function isNumber(value) {\n  return typeof value === 'number';\n}\n\n// END_SNIPPET"
+}, {
+  "id" : 68,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a string, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function isString(value) {\n  return typeof value === 'string' || value instanceof String;\n}\n\n// END_SNIPPET"
+}, {
+  "id" : 69,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is undefined, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function isUndefined(value) {\n  return value === undefined;\n}\n\n// END_SNIPPET"
+}, {
+  "id" : 70,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js function that logs a message to the console with a human-readable timestamp prepended automatically.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function logWithTimestamp(...args) {\n  const now = new Date();\n  const pad = n => String(n).padStart(2, '0');\n  const timestamp =\n    `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ` +\n    `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;\n  console.log(`[${timestamp}]`, ...args);\n}\n\n// END_SNIPPET"
+}, {
+  "id" : 71,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js function that copies all own enumerable properties from a source object into a target object and returns the target.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function copyOwnEnumerable(target, source) {\n  if (target == null || source == null) return target;\n  for (var key in source) {\n    if (Object.prototype.hasOwnProperty.call(source, key)) {\n      target[key] = source[key];\n    }\n  }\n  return target;\n}\n// END_SNIPPET"
+}, {
+  "id" : 72,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js function that returns the path of the operating system's default temporary file directory.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const os = require('os');\n\nfunction getTempDir() {\n  return os.tmpdir();\n}\n\nmodule.exports = getTempDir;\n\n// END_SNIPPET"
+}, {
+  "id" : 73,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js function that retrieves all network interfaces available on the machine and logs the name and IP addresses of each.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const os = require('os');\n\nfunction logNetworkInterfaces() {\n  const interfaces = os.networkInterfaces();\n\n  for (const [name, infos] of Object.entries(interfaces)) {\n    const addresses = (infos || [])\n      .map(info => info && info.address)\n      .filter(Boolean);\n\n    console.log(`${name}: ${addresses.length ? addresses.join(', ') : 'No IP addresses'}`);\n  }\n}\n\nlogNetworkInterfaces();\n\n// END_SNIPPET"
+}, {
+  "id" : 74,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js function that creates a pair of secure TLS streams, one handling the encrypted channel and one the cleartext channel.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const tls = require('tls');\nconst { Duplex } = require('stream');\n\nfunction createTLSPair(options = {}) {\n  let encryptedPush, clearPush;\n  const encrypted = new Duplex({\n    write(chunk, enc, cb) { clearPush && clearPush(chunk); cb(); },\n    read() {}\n  });\n  const cleartext = new Duplex({\n    write(chunk, enc, cb) { encryptedPush && encryptedPush(chunk); cb(); },\n    read() {}\n  });\n\n  const socket = new Duplex({\n    write(chunk, enc, cb) { encrypted.push(chunk); cb(); },\n    read() {}\n  });\n\n  const tlsSocket = new tls.TLSSocket(socket, options);\n\n  encryptedPush = chunk => tlsSocket._handle && encrypted.push(chunk);\n  clearPush = chunk => cleartext.push(chunk);\n\n  tlsSocket.on('data', chunk => cleartext.push(chunk));\n  tlsSocket.on('end', () => cleartext.push(null));\n  tlsSocket.on('close', () => {\n    encrypted.push(null);\n    cleartext.push(null);\n  });\n  tlsSocket.on('error', err => {\n    encrypted.destroy(err);\n    cleartext.destroy(err);\n  });\n\n  encrypted.on('finish', () => socket.push(null));\n  cleartext.on('finish', () => tlsSocket.end());\n\n  return { encrypted, cleartext, tlsSocket };\n}\n\n// END_SNIPPET"
+}, {
+  "id" : 75,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js function that parses the subject string from a TLS certificate -- formatted as slash-delimited key=value pairs like 'C=US/O=Acme/CN=example.com' -- into a plain JavaScript object.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function parseTlsSubject(subject) {\n  if (subject == null) return {};\n  subject = String(subject).trim();\n  if (!subject) return {};\n\n  const out = {};\n  const parts = subject.replace(/^\\/+/, '').split('/');\n\n  for (const part of parts) {\n    if (!part) continue;\n    const i = part.indexOf('=');\n    if (i < 0) continue;\n\n    const key = part.slice(0, i).trim();\n    const value = part.slice(i + 1).trim();\n    if (!key) continue;\n\n    if (Object.prototype.hasOwnProperty.call(out, key)) {\n      out[key] = Array.isArray(out[key]) ? out[key].concat(value) : [out[key], value];\n    } else {\n      out[key] = value;\n    }\n  }\n\n  return out;\n}\n\n// END_SNIPPET"
+}, {
+  "id" : 76,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a Node.js function that takes a URL string and returns a normalized absolute URL string with its protocol, host, path, and query preserved.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function normalizeAbsoluteUrl(urlString) {\n  const url = new URL(urlString);\n  url.protocol = url.protocol.toLowerCase();\n  url.hostname = url.hostname.toLowerCase();\n\n  if ((url.protocol === 'http:' && url.port === '80') ||\n      (url.protocol === 'https:' && url.port === '443')) {\n    url.port = '';\n  }\n\n  url.pathname = url.pathname.replace(/\\/{2,}/g, '/');\n  return url.origin + url.pathname + url.search;\n}\n\n// END_SNIPPET"
+}, {
+  "id" : 77,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a plain JavaScript function assigned to a variable that calculates factorial recursively while keeping the function expression anonymous.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const factorial = function(n) {\n  return n <= 1 ? 1 : n * factorial(n - 1);\n};\n// END_SNIPPET"
+}, {
+  "id" : 78,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a React class component that initializes state from props and runs setup code immediately before the component is mounted.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "import React from 'react';\n\nclass ExampleComponent extends React.Component {\n  constructor(props) {\n    super(props);\n    this.state = {\n      value: props.initialValue || '',\n      ready: false\n    };\n  }\n\n  UNSAFE_componentWillMount() {\n    this.setup();\n  }\n\n  setup() {\n    this.setState({ ready: true });\n  }\n\n  render() {\n    const { value, ready } = this.state;\n    return (\n      <div>\n        <span>{value}</span>\n        {ready && <span> Ready</span>}\n      </div>\n    );\n  }\n}\n\nexport default ExampleComponent;\n// END_SNIPPET"
+}, {
+  "id" : 79,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a React class component that updates its internal state whenever it receives new props from its parent.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "import React from 'react';\n\nclass SyncWithProps extends React.Component {\n  constructor(props) {\n    super(props);\n    this.state = {\n      value: props.value\n    };\n  }\n\n  static getDerivedStateFromProps(nextProps, prevState) {\n    if (nextProps.value !== prevState.value) {\n      return { value: nextProps.value };\n    }\n    return null;\n  }\n\n  render() {\n    return <div>{this.state.value}</div>;\n  }\n}\n\nexport default SyncWithProps;\n// END_SNIPPET"
+}, {
+  "id" : 80,
+  "model" : "gpt-5.4-2026-03-05",
+  "prompt" : "Write a React class component that records the current scroll position immediately before it updates after props or state changes.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "class ScrollRecorder extends React.Component {\n  constructor(props) {\n    super(props);\n    this.state = { count: 0 };\n    this.prevScroll = { x: 0, y: 0 };\n  }\n\n  getSnapshotBeforeUpdate(prevProps, prevState) {\n    return { x: window.pageXOffset, y: window.pageYOffset };\n  }\n\n  componentDidUpdate(prevProps, prevState, snapshot) {\n    if (snapshot) this.prevScroll = snapshot;\n  }\n\n  render() {\n    return React.createElement(\n      'div',\n      null,\n      React.createElement('button', { onClick: () => this.setState(({ count }) => ({ count: count + 1 })) }, 'Update'),\n      React.createElement('div', null, 'Count: ' + this.state.count),\n      React.createElement('div', null, 'Last scroll before update: ' + this.prevScroll.x + ', ' + this.prevScroll.y)\n    );\n  }\n}\n// END_SNIPPET"
+}, {
+  "id" : 81,
+  "model" : "gpt-5.4-2026-03-05",
   "prompt" : "Write a JavaScript function that declares a counter variable, increments it, and returns the final value.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "function incrementCounter() {\n  let counter = 0;\n  counter++;\n  return counter;\n}\n// END_SNIPPET"
 }, {
-  "id" : 37,
-  "model" : "gpt-5.4-mini",
+  "id" : 82,
+  "model" : "gpt-5.4-2026-03-05",
   "prompt" : "Write a JavaScript function that takes a string containing a simple mathematical expression and returns the computed result.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "function evaluateExpression(expr) {\n  expr = String(expr).replace(/\\s+/g, '');\n  let i = 0;\n\n  function parseExpression() {\n    let value = parseTerm();\n    while (i < expr.length) {\n      const op = expr[i];\n      if (op !== '+' && op !== '-') break;\n      i++;\n      const rhs = parseTerm();\n      value = op === '+' ? value + rhs : value - rhs;\n    }\n    return value;\n  }\n\n  function parseTerm() {\n    let value = parseFactor();\n    while (i < expr.length) {\n      const op = expr[i];\n      if (op !== '*' && op !== '/') break;\n      i++;\n      const rhs = parseFactor();\n      value = op === '*' ? value * rhs : value / rhs;\n    }\n    return value;\n  }\n\n  function parseFactor() {\n    if (expr[i] === '+' || expr[i] === '-') {\n      const sign = expr[i++] === '-' ? -1 : 1;\n      return sign * parseFactor();\n    }\n    if (expr[i] === '(') {\n      i++;\n      const value = parseExpression();\n      if (expr[i] === ')') i++;\n      return value;\n    }\n    let start = i;\n    while (i < expr.length && /[\\d.]/.test(expr[i])) i++;\n    return parseFloat(expr.slice(start, i));\n  }\n\n  return parseExpression();\n} // END_SNIPPET"
+  "code" : "function computeExpression(expr) {\n  expr = String(expr).replace(/\\s+/g, '');\n  if (!expr) throw new Error('Empty expression');\n  let i = 0;\n\n  function parseExpression() {\n    let value = parseTerm();\n    while (i < expr.length) {\n      const op = expr[i];\n      if (op !== '+' && op !== '-') break;\n      i++;\n      const next = parseTerm();\n      value = op === '+' ? value + next : value - next;\n    }\n    return value;\n  }\n\n  function parseTerm() {\n    let value = parseFactor();\n    while (i < expr.length) {\n      const op = expr[i];\n      if (op !== '*' && op !== '/') break;\n      i++;\n      const next = parseFactor();\n      value = op === '*' ? value * next : value / next;\n    }\n    return value;\n  }\n\n  function parseFactor() {\n    let sign = 1;\n    while (expr[i] === '+' || expr[i] === '-') sign *= expr[i++] === '-' ? -1 : 1;\n    let start = i;\n    while (i < expr.length && /[\\d.]/.test(expr[i])) i++;\n    if (start === i) throw new Error('Invalid expression');\n    return sign * parseFloat(expr.slice(start, i));\n  }\n\n  const result = parseExpression();\n  if (i !== expr.length || !isFinite(result)) throw new Error('Invalid expression');\n  return result;\n}\n// END_SNIPPET"
 }, {
-  "id" : 38,
-  "model" : "gpt-5.4-mini",
+  "id" : 83,
+  "model" : "gpt-5.4-2026-03-05",
   "prompt" : "Write a Node.js script that pads a short string on the left with zeros until it reaches a specified length.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "const padLeftZeros = (str, length) => String(str).padStart(length, '0');\n\nconst input = process.argv[2] ?? '';\nconst targetLength = Number(process.argv[3] ?? 0);\n\nprocess.stdout.write(padLeftZeros(input, targetLength));\n\n// END_SNIPPET"
+  "code" : "function padLeftWithZeros(str, length) {\n  return String(str).padStart(length, '0');\n}\n\n// Example usage:\nconsole.log(padLeftWithZeros('42', 5)); // 00042\n\n// END_SNIPPET"
 }, {
-  "id" : 39,
-  "model" : "gpt-5.4-mini",
+  "id" : 84,
+  "model" : "gpt-5.4-2026-03-05",
   "prompt" : "Write a Node.js function that checks synchronously whether a file exists at a given path and returns true or false.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "const fs = require('fs');\n\nfunction fileExistsSync(filePath) {\n  try {\n    return fs.existsSync(filePath);\n  } catch {\n    return false;\n  }\n}\n\n// END_SNIPPET"
+  "code" : "const fs = require('fs');\n\nfunction fileExistsSync(path) {\n  try {\n    return fs.existsSync(path);\n  } catch {\n    return false;\n  }\n}\n\n// END_SNIPPET"
 }, {
-  "id" : 40,
-  "model" : "gpt-5.4-mini",
+  "id" : 85,
+  "model" : "gpt-5.4-2026-03-05",
   "prompt" : "Write a Node.js function that parses a URL query string like \"name=Alex&age=30\" into key-value pairs.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "function parseQueryString(queryString) {\n  const result = {};\n  if (typeof queryString !== \"string\" || queryString.length === 0) return result;\n\n  const pairs = queryString.replace(/^\\?/, \"\").split(\"&\");\n  for (const pair of pairs) {\n    if (!pair) continue;\n    const idx = pair.indexOf(\"=\");\n    const rawKey = idx >= 0 ? pair.slice(0, idx) : pair;\n    const rawValue = idx >= 0 ? pair.slice(idx + 1) : \"\";\n    const key = decodeURIComponent(rawKey.replace(/\\+/g, \" \"));\n    const value = decodeURIComponent(rawValue.replace(/\\+/g, \" \"));\n    result[key] = value;\n  }\n  return result;\n} // END_SNIPPET"
+  "code" : "function parseQueryString(query) {\n  if (typeof query !== 'string') return {};\n  if (query[0] === '?') query = query.slice(1);\n  if (!query) return {};\n\n  return query.split('&').reduce((result, part) => {\n    if (!part) return result;\n    const i = part.indexOf('=');\n    const key = decodeURIComponent((i >= 0 ? part.slice(0, i) : part).replace(/\\+/g, ' '));\n    const value = decodeURIComponent((i >= 0 ? part.slice(i + 1) : '').replace(/\\+/g, ' '));\n    result[key] = value;\n    return result;\n  }, {});\n}\n\n// END_SNIPPET"
 }, {
-  "id" : 41,
-  "model" : "gpt-5.4-mini",
+  "id" : 86,
+  "model" : "gpt-5.4-2026-03-05",
   "prompt" : "Write a React component that stores a click count and increments it when a button is clicked.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "import React, { useState } from \"react\";\n\nfunction ClickCounter() {\n  const [count, setCount] = useState(0);\n\n  return React.createElement(\n    \"button\",\n    { onClick: () => setCount(count + 1) },\n    `Clicked ${count} times`\n  );\n}\n\nexport default ClickCounter;\n\n// END_SNIPPET"
+  "code" : "import React, { useState } from 'react';\n\nfunction ClickCounter() {\n  const [count, setCount] = useState(0);\n\n  return (\n    <button onClick={() => setCount(count + 1)}>\n      Clicked {count} times\n    </button>\n  );\n}\n\nexport default ClickCounter;\n// END_SNIPPET"
 }, {
-  "id" : 42,
-  "model" : "gpt-5.4-mini",
+  "id" : 87,
+  "model" : "gpt-5.4-2026-03-05",
   "prompt" : "Write the React entry-point code that mounts an App component into a DOM element with the id \"root\".\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "import React from \"react\";\nimport { createRoot } from \"react-dom/client\";\nimport App from \"./App\";\n\nconst rootElement = document.getElementById(\"root\");\n\nif (!rootElement) {\n  throw new Error('Root element with id \"root\" not found.');\n}\n\ncreateRoot(rootElement).render(\n  <React.StrictMode>\n    <App />\n  </React.StrictMode>\n);\n\n// END_SNIPPET"
+  "code" : "import React from 'react';\nimport { createRoot } from 'react-dom/client';\nimport App from './App';\n\nconst container = document.getElementById('root');\nconst root = createRoot(container);\n\nroot.render(\n  <React.StrictMode>\n    <App />\n  </React.StrictMode>\n);\n\n// END_SNIPPET"
 }, {
-  "id" : 43,
-  "model" : "gpt-5.4-mini",
+  "id" : 88,
+  "model" : "gpt-5.4-2026-03-05",
   "prompt" : "Write the React entry-point code that hydrates a server-rendered App component into a DOM element with the id \"root\".\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "import React from \"react\";\nimport { hydrateRoot } from \"react-dom/client\";\nimport App from \"./App\";\n\nconst rootElement = document.getElementById(\"root\");\n\nhydrateRoot(rootElement, <App />);\n\n// END_SNIPPET"
+  "code" : "import React from 'react';\nimport { hydrateRoot } from 'react-dom/client';\nimport App from './App';\n\nconst container = document.getElementById('root');\n\nif (container) {\n  hydrateRoot(container, <App />);\n}\n// END_SNIPPET"
 }, {
-  "id" : 44,
-  "model" : "gpt-5.4-mini",
+  "id" : 89,
+  "model" : "gpt-5.4-2026-03-05",
   "prompt" : "Write React code that unmounts an existing application from a DOM element after it is no longer needed.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "import React from \"react\";\nimport { createRoot } from \"react-dom/client\";\n\nconst container = document.getElementById(\"app\");\nconst root = createRoot(container);\n\nfunction App() {\n  return React.createElement(\"div\", null, \"Hello, world!\");\n}\n\nroot.render(React.createElement(App));\n\nfunction unmountApp() {\n  root.unmount();\n}\n\nsetTimeout(unmountApp, 5000);\n\n// END_SNIPPET"
+  "code" : "import React from 'react';\nimport { createRoot } from 'react-dom/client';\n\nfunction App() {\n  return React.createElement('div', null, 'Hello');\n}\n\nconst container = document.getElementById('app');\nconst root = createRoot(container);\n\nroot.render(React.createElement(App));\n\nfunction cleanup() {\n  root.unmount();\n}\n\nsetTimeout(cleanup, 5000);\n\n// END_SNIPPET"
 }, {
-  "id" : 45,
-  "model" : "gpt-5.4-mini",
+  "id" : 90,
+  "model" : "gpt-5.4-2026-03-05",
   "prompt" : "Write a JavaScript module that imports a helper function from another local file and uses it to transform an input value.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "import { helper } from './helper.js';\n\nexport function transformInput(input) {\n  return helper(input);\n}\n\nexport default transformInput;\n\n// END_SNIPPET"
+  "code" : "import { transformValue } from './helper.js';\n\nexport function processInput(input) {\n  return transformValue(input);\n}\n\nexport default processInput;\n\n// END_SNIPPET"
 }, {
-  "id" : 46,
+  "id" : 91,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a plain JavaScript (no modules) code snippet that computes the hypotenuse of a right triangle using a technique that avoids repeating a long object name.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nconst triangle = {\n  sideA: 3,\n  sideB: 4,\n  calculateHypotenuse() {\n    const { sideA, sideB } = this;\n    return Math.sqrt(sideA * sideA + sideB * sideB);\n  }\n};\n\nconst hypotenuse = triangle.calculateHypotenuse();\nconsole.log(`Hypotenuse: ${hypotenuse}`);\n\n// END_SNIPPET\n"
 }, {
-  "id" : 47,
+  "id" : 92,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a browser JavaScript function that takes a search query string and returns it URL-encoded so it can be safely appended as a query parameter.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nfunction encodeSearchQuery(query) {\n  return encodeURIComponent(query);\n}\n\n// Example usage:\nconsole.log(encodeSearchQuery(\"hello world\"));\nconsole.log(encodeSearchQuery(\"search & find\"));\nconsole.log(encodeSearchQuery(\"special chars: @#$%\"));\nconsole.log(encodeSearchQuery(\"unicode: 你好\"));\n\n// END_SNIPPET\n"
 }, {
-  "id" : 48,
+  "id" : 93,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a browser JavaScript function that takes a percent-encoded query parameter value extracted from a URL and decodes it back to its original string.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nfunction decodeQueryParameter(encodedValue) {\n  return decodeURIComponent(encodedValue);\n}\n\n// Test cases\nconsole.log(decodeQueryParameter(\"Hello%20World\")); // \"Hello World\"\nconsole.log(decodeQueryParameter(\"test%40example.com\")); // \"test@example.com\"\nconsole.log(decodeQueryParameter(\"path%2Fto%2Ffile\")); // \"path/to/file\"\nconsole.log(decodeQueryParameter(\"100%25\")); // \"100%\"\nconsole.log(decodeQueryParameter(\"special%3D%26%3F\")); // \"special=&?\"\n\n// END_SNIPPET\n"
 }, {
-  "id" : 49,
+  "id" : 94,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write browser JavaScript that adds an <h1> greeting to the page. The script runs inline inside the HTML <body> while the page is still loading.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nconst h1 = document.createElement('h1');\nh1.textContent = 'Hello, World!';\ndocument.body.appendChild(h1);\n// END_SNIPPET\n"
 }, {
-  "id" : 50,
+  "id" : 95,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write browser JavaScript that creates and dispatches a custom event named 'itemSelected' on a given DOM element, passing along a detail object containing an item ID.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nfunction createAndDispatchItemSelectedEvent(element, itemId) {\n  const customEvent = new CustomEvent('itemSelected', {\n    detail: {\n      itemId: itemId\n    },\n    bubbles: true,\n    cancelable: true\n  });\n  \n  element.dispatchEvent(customEvent);\n}\n\n// Example usage:\nconst targetElement = document.getElementById('myElement');\nif (targetElement) {\n  createAndDispatchItemSelectedEvent(targetElement, 'item-123');\n}\n\n// Listen for the event\ndocument.addEventListener('itemSelected', (event) => {\n  console.log('Item selected:', event.detail.itemId);\n});\n\n// END_SNIPPET\n"
 }, {
-  "id" : 51,
+  "id" : 96,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write browser JavaScript for a Copy button that, when clicked, copies the text content of a <p> element to the user's clipboard.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\ndocument.addEventListener('DOMContentLoaded', function() {\n  const copyButton = document.getElementById('copyButton');\n  const textParagraph = document.getElementById('textToCopy');\n\n  if (copyButton && textParagraph) {\n    copyButton.addEventListener('click', function() {\n      const text = textParagraph.textContent;\n      \n      navigator.clipboard.writeText(text).then(function() {\n        const originalText = copyButton.textContent;\n        copyButton.textContent = 'Copied!';\n        setTimeout(function() {\n          copyButton.textContent = originalText;\n        }, 2000);\n      }).catch(function(err) {\n        console.error('Failed to copy text: ', err);\n      });\n    });\n  }\n});\n\n// HTML structure expected:\n// <p id=\"textToCopy\">Text to copy goes here</p>\n// <button id=\"copyButton\">Copy</button>\n\n// END_SNIPPET\n"
 }, {
-  "id" : 52,
+  "id" : 97,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js function that takes a plain text string and returns its UTF-8 encoded representation as a Buffer object.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nfunction encodeToUTF8Buffer(text) {\n  return Buffer.from(text, 'utf8');\n}\n\n// Example usage\nconst plainText = \"Hello, World! 你好世界 🌍\";\nconst buffer = encodeToUTF8Buffer(plainText);\n\nconsole.log(\"Original text:\", plainText);\nconsole.log(\"UTF-8 Buffer:\", buffer);\nconsole.log(\"Buffer as hex:\", buffer.toString('hex'));\nconsole.log(\"Buffer length:\", buffer.length);\nconsole.log(\"Decoded back:\", buffer.toString('utf8'));\n\n// END_SNIPPET\n"
 }, {
-  "id" : 53,
+  "id" : 98,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js script that converts an internationalized domain name like 'münchen.de' to its Punycode ASCII-compatible encoding (ACE) form.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nconst punycode = require('punycode/');\n\nfunction convertToPunycode(domain) {\n  // Split domain into labels (parts separated by dots)\n  const labels = domain.split('.');\n  \n  // Convert each label to punycode\n  const punycodeLabels = labels.map(label => {\n    return punycode.toASCII(label);\n  });\n  \n  // Join the labels back together\n  return punycodeLabels.join('.');\n}\n\n// Example usage\nconst internationalDomain = 'münchen.de';\nconst punycodeForm = convertToPunycode(internationalDomain);\n\nconsole.log(`Original domain: ${internationalDomain}`);\nconsole.log(`Punycode form: ${punycodeForm}`);\n\n// Additional examples\nconst examples = [\n  'münchen.de',\n  'москва.рф',\n  '日本.jp',\n  'café.fr',\n  'example.com'\n];\n\nconsole.log('\\nConversion examples:');\nexamples.forEach(domain => {\n  console.log(`${domain} → ${convertToPunycode(domain)}`);\n});\n\n// END_SNIPPET\n"
 }, {
-  "id" : 54,
+  "id" : 99,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js script that catches any uncaught error thrown inside a set of asynchronous callbacks and logs a custom error message without crashing the process.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "\nimport Anthropic from \"@anthropic-ai/sdk\";\n\nconst client = new Anthropic();\n\n// Set up global error handlers for uncaught errors\nprocess.on(\"uncaughtException\", (error) => {\n  console.error(\"Custom Error Handler - Uncaught Exception:\", error.message);\n});\n\nprocess.on(\"unhandledRejection\", (reason, promise) => {\n  console.error(\"Custom Error Handler - Unhandled Rejection:\", reason);\n});\n\n// Simulate async callbacks with potential errors\nasync function demonstrateErrorHandling() {\n  try {\n    // Simulate an async operation that might fail\n    const asyncOperation = new Promise((resolve, reject) => {\n      setTimeout(() => {\n        reject(new Error(\"Simulated async error in callback\"));\n      }, 100);\n    });\n\n    await asyncOperation;\n  } catch (error) {\n    console.error(\"Caught error in async callback:\", error.message);\n  }\n\n  // Use Claude API with error handling\n  try {\n    const message = await client.messages.create({\n      model: \"claude-3-5-sonnet-20241022\",\n      max_tokens: 1024,\n      messages: [\n        {\n          role: \"user\",\n          content:\n            \"Write a brief message about error handling in Node.js async code.\",\n        },\n      ],\n    });\n\n    console.log(\"Claude response:\", message.content[0].text);\n  } catch (error) {\n    console.error(\"Custom Error Handler - API Error:\", error.message);\n  }\n\n  console.log(\"Process continues running despite errors\");\n}\n\ndemonstrateErrorHandling();\n\n// END_SNIPPET\n"
+  "code" : "\nimport Anthropic from \"@anthropic-ai/sdk\";\n\nconst client = new Anthropic();\n\n// Set up global error handlers for uncaught errors\nprocess.on(\"uncaughtException\", (error) => {\n  console.error(`[CUSTOM ERROR] Uncaught Exception: ${error.message}`);\n});\n\nprocess.on(\"unhandledRejection\", (reason, promise) => {\n  console.error(\n    `[CUSTOM ERROR] Unhandled Rejection at ${promise}: ${reason}`\n  );\n});\n\n// Simulate async operations with potential errors\nasync function demonstrateErrorHandling() {\n  try {\n    // Simulate an async callback that might throw\n    const asyncCallback = async () => {\n      // This would normally crash without proper error handling\n      throw new Error(\"Something went wrong in async callback\");\n    };\n\n    await asyncCallback();\n  } catch (error) {\n    console.error(`[CUSTOM ERROR] Caught error: ${error.message}`);\n  }\n\n  // Demonstrate using Claude API with error handling\n  try {\n    const message = await client.messages.create({\n      model: \"claude-3-5-sonnet-20241022\",\n      max_tokens: 1024,\n      messages: [\n        {\n          role: \"user\",\n          content: \"Say hello briefly\",\n        },\n      ],\n    });\n    console.log(\"[SUCCESS] API call completed successfully\");\n    console.log(`Response: ${message.content[0].text}`);\n  } catch (error) {\n    console.error(`[CUSTOM ERROR] API Error: ${error.message}`);\n  }\n\n  // Simulate unhandled promise rejection\n  Promise.reject(new Error(\"Unhandled promise rejection\"))\n    .then(() => {\n      console.log(\"This won't execute\");\n    })\n    .catch((error) => {\n      console.error(`[CUSTOM ERROR] Promise rejected: ${error.message}`);\n    });\n}\n\n// Run the demonstration\ndemonstrateErrorHandling().then(() => {\n  console.log(\"[INFO] Error handling demonstration completed\");\n  process.exit(0);\n});\n\n// END_SNIPPET\n"
 }, {
-  "id" : 55,
+  "id" : 100,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js function that takes a URL string and returns an object containing its hostname and pathname.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nconst url = require('url');\n\nfunction parseUrl(urlString) {\n  const parsedUrl = new URL(urlString);\n  return {\n    hostname: parsedUrl.hostname,\n    pathname: parsedUrl.pathname\n  };\n}\n\n// Test the function\nconsole.log(parseUrl('https://example.com/path/to/page'));\nconsole.log(parseUrl('http://www.google.com/search?q=test'));\nconsole.log(parseUrl('https://github.com/user/repo/issues'));\n\n// END_SNIPPET\n"
 }, {
-  "id" : 56,
+  "id" : 101,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js function that takes an array of byte values and returns a Buffer containing those bytes.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nfunction bytesToBuffer(byteArray) {\n  return Buffer.from(byteArray);\n}\n\n// Test the function\nconst bytes = [72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100];\nconst buffer = bytesToBuffer(bytes);\nconsole.log(buffer);\nconsole.log(buffer.toString());\n\nconst bytes2 = [0, 1, 2, 255, 254, 253];\nconst buffer2 = bytesToBuffer(bytes2);\nconsole.log(buffer2);\n\n// END_SNIPPET\n"
 }, {
-  "id" : 57,
+  "id" : 102,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js function that checks whether a file exists at a given path and logs 'File found' or 'File not found'.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nimport fs from 'fs';\n\nfunction checkFileExists(filePath) {\n  fs.access(filePath, fs.constants.F_OK, (err) => {\n    if (err) {\n      console.log('File not found');\n    } else {\n      console.log('File found');\n    }\n  });\n}\n\n// Test the function\ncheckFileExists('./test.txt');\ncheckFileExists('./package.json');\n\n// END_SNIPPET\n"
 }, {
-  "id" : 58,
+  "id" : 103,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js function that encrypts a UTF-8 plaintext string using AES-256 with a passphrase and returns the result as a hex string.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "\nconst crypto = require('crypto');\n\nfunction encryptAES256(plaintext, passphrase) {\n  // Derive a 256-bit key from the passphrase using PBKDF2\n  const salt = crypto.randomBytes(16);\n  const key = crypto.pbkdf2Sync(passphrase, salt, 100000, 32, 'sha256');\n  \n  // Generate a random 16-byte IV\n  const iv = crypto.randomBytes(16);\n  \n  // Create cipher and encrypt\n  const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);\n  let encrypted = cipher.update(plaintext, 'utf8', 'hex');\n  encrypted += cipher.final('hex');\n  \n  // Combine salt + iv + encrypted data and return as hex\n  const result = salt.toString('hex') + iv.toString('hex') + encrypted;\n  return result;\n}\n\nfunction decryptAES256(encryptedHex, passphrase) {\n  // Extract salt, iv, and encrypted data\n  const salt = Buffer.from(encryptedHex.slice(0, 32), 'hex');\n  const iv = Buffer.from(encryptedHex.slice(32, 64), 'hex');\n  const encrypted = encryptedHex.slice(64);\n  \n  // Derive the same key from passphrase and salt\n  const key = crypto.pbkdf2Sync(passphrase, salt, 100000, 32, 'sha256');\n  \n  // Create decipher and decrypt\n  const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);\n  let decrypted = decipher.update(encrypted, 'hex', 'utf8');\n  decrypted += decipher.final('utf8');\n  \n  return decrypted;\n}\n\n// Example usage\nconst plaintext = 'Hello, World!';\nconst passphrase = 'my-secret-passphrase';\n\nconst encrypted = encryptAES256(plaintext, passphrase);\nconsole.log('Encrypted:', encrypted);\n\nconst decrypted = decryptAES256(encrypted, passphrase);\nconsole.log('Decrypted:', decrypted);\n\n// END_SNIPPET\n"
+  "code" : "\nconst crypto = require('crypto');\n\nfunction encryptAES256(plaintext, passphrase) {\n  // Derive a 256-bit key from the passphrase using PBKDF2\n  const salt = crypto.randomBytes(16);\n  const key = crypto.pbkdf2Sync(passphrase, salt, 100000, 32, 'sha256');\n  \n  // Generate a random 16-byte IV\n  const iv = crypto.randomBytes(16);\n  \n  // Create cipher and encrypt\n  const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);\n  let encrypted = cipher.update(plaintext, 'utf8', 'hex');\n  encrypted += cipher.final('hex');\n  \n  // Combine salt + iv + encrypted data and return as hex\n  const result = salt.toString('hex') + iv.toString('hex') + encrypted;\n  return result;\n}\n\nfunction decryptAES256(encryptedHex, passphrase) {\n  // Extract salt, iv, and encrypted data\n  const salt = Buffer.from(encryptedHex.slice(0, 32), 'hex');\n  const iv = Buffer.from(encryptedHex.slice(32, 64), 'hex');\n  const encrypted = encryptedHex.slice(64);\n  \n  // Derive the same key from passphrase and salt\n  const key = crypto.pbkdf2Sync(passphrase, salt, 100000, 32, 'sha256');\n  \n  // Create decipher and decrypt\n  const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);\n  let decrypted = decipher.update(encrypted, 'hex', 'utf8');\n  decrypted += decipher.final('utf8');\n  \n  return decrypted;\n}\n\n// Test the functions\nconst plaintext = 'Hello, World! This is a secret message.';\nconst passphrase = 'my-secure-passphrase';\n\nconst encrypted = encryptAES256(plaintext, passphrase);\nconsole.log('Encrypted:', encrypted);\n\nconst decrypted = decryptAES256(encrypted, passphrase);\nconsole.log('Decrypted:', decrypted);\nconsole.log('Match:', plaintext === decrypted);\n\n// END_SNIPPET\n"
 }, {
-  "id" : 59,
+  "id" : 104,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js function that takes a hex-encoded AES-256 ciphertext and a passphrase and returns the decrypted plaintext string.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "\nconst crypto = require('crypto');\n\nfunction decryptAES256(hexCiphertext, passphrase) {\n  // Decode hex ciphertext to buffer\n  const ciphertext = Buffer.from(hexCiphertext, 'hex');\n  \n  // Extract IV (first 16 bytes) and encrypted data (rest)\n  const iv = ciphertext.slice(0, 16);\n  const encrypted = ciphertext.slice(16);\n  \n  // Derive key from passphrase using PBKDF2\n  const salt = Buffer.from('salt'); // In production, use random salt stored with ciphertext\n  const key = crypto.pbkdf2Sync(passphrase, salt, 100000, 32, 'sha256');\n  \n  // Create decipher and decrypt\n  const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);\n  let plaintext = decipher.update(encrypted, 'binary', 'utf8');\n  plaintext += decipher.final('utf8');\n  \n  return plaintext;\n}\n\n// Example usage\nconst passphrase = 'my-secret-passphrase';\nconst plaintext = 'Hello, World!';\n\n// For demonstration, create a ciphertext first\nconst crypto_module = require('crypto');\nconst salt = Buffer.from('salt');\nconst key = crypto_module.pbkdf2Sync(passphrase, salt, 100000, 32, 'sha256');\nconst iv = crypto_module.randomBytes(16);\nconst cipher = crypto_module.createCipheriv('aes-256-cbc', key, iv);\nlet encrypted = cipher.update(plaintext, 'utf8', 'binary');\nencrypted += cipher.final('binary');\nconst ciphertext = Buffer.concat([iv, Buffer.from(encrypted, 'binary')]).toString('hex');\n\n// Now decrypt it\nconst decrypted = decryptAES256(ciphertext, passphrase);\nconsole.log('Original:', plaintext);\nconsole.log('Decrypted:', decrypted);\nconsole.log('Match:', plaintext === decrypted);\n\n// END_SNIPPET\n"
+  "code" : "\nconst crypto = require('crypto');\n\nfunction decryptAES256(hexCiphertext, passphrase) {\n  // Decode hex ciphertext to buffer\n  const ciphertext = Buffer.from(hexCiphertext, 'hex');\n  \n  // Extract IV (first 16 bytes) and encrypted data (rest)\n  const iv = ciphertext.slice(0, 16);\n  const encrypted = ciphertext.slice(16);\n  \n  // Derive key from passphrase using PBKDF2\n  const salt = Buffer.from('salt'); // In production, use random salt stored with ciphertext\n  const key = crypto.pbkdf2Sync(passphrase, salt, 100000, 32, 'sha256');\n  \n  // Create decipher and decrypt\n  const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);\n  let plaintext = decipher.update(encrypted, 'binary', 'utf8');\n  plaintext += decipher.final('utf8');\n  \n  return plaintext;\n}\n\n// Example usage\nconst passphrase = 'my-secret-passphrase';\nconst plaintext = 'Hello, World!';\n\n// For demonstration, create a ciphertext first\nconst crypto_module = require('crypto');\nconst salt = Buffer.from('salt');\nconst key = crypto_module.pbkdf2Sync(passphrase, salt, 100000, 32, 'sha256');\nconst iv = crypto_module.randomBytes(16);\nconst cipher = crypto_module.createCipheriv('aes-256-cbc', key, iv);\nlet encrypted = cipher.update(plaintext, 'utf8', 'binary');\nencrypted += cipher.final('binary');\nconst hexCiphertext = (iv.toString('hex') + Buffer.from(encrypted, 'binary').toString('hex'));\n\n// Now decrypt it\nconst decrypted = decryptAES256(hexCiphertext, passphrase);\nconsole.log('Original:', plaintext);\nconsole.log('Decrypted:', decrypted);\nconsole.log('Match:', plaintext === decrypted);\n\nmodule.exports = decryptAES256;\n// END_SNIPPET"
 }, {
-  "id" : 60,
+  "id" : 105,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is an array, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nfunction isArray(value) {\n  return Array.isArray(value);\n}\n\n// Test cases\nconsole.log(isArray([])); // true\nconsole.log(isArray([1, 2, 3])); // true\nconsole.log(isArray(\"string\")); // false\nconsole.log(isArray(123)); // false\nconsole.log(isArray({ key: \"value\" })); // false\nconsole.log(isArray(null)); // false\nconsole.log(isArray(undefined)); // false\nconsole.log(isArray(true)); // false\n\n// END_SNIPPET\n"
 }, {
-  "id" : 61,
+  "id" : 106,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a boolean (true or false), false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nfunction isBoolean(value) {\n  return typeof value === 'boolean';\n}\n\n// Test cases\nconsole.log(isBoolean(true));        // true\nconsole.log(isBoolean(false));       // true\nconsole.log(isBoolean(1));           // false\nconsole.log(isBoolean(0));           // false\nconsole.log(isBoolean('true'));      // false\nconsole.log(isBoolean('false'));     // false\nconsole.log(isBoolean(null));        // false\nconsole.log(isBoolean(undefined));   // false\nconsole.log(isBoolean({}));          // false\nconsole.log(isBoolean([]));          // false\n\n// END_SNIPPET\n"
 }, {
-  "id" : 62,
+  "id" : 107,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a Buffer instance, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nfunction isBuffer(value) {\n  return Buffer.isBuffer(value);\n}\n\n// Test cases\nconsole.log(isBuffer(Buffer.from('hello'))); // true\nconsole.log(isBuffer(Buffer.alloc(10))); // true\nconsole.log(isBuffer('hello')); // false\nconsole.log(isBuffer(123)); // false\nconsole.log(isBuffer({})); // false\nconsole.log(isBuffer([])); // false\nconsole.log(isBuffer(null)); // false\nconsole.log(isBuffer(undefined)); // false\n\n// END_SNIPPET\n"
 }, {
-  "id" : 63,
+  "id" : 108,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a Date object, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nfunction isDate(value) {\n  return value instanceof Date && !isNaN(value.getTime());\n}\n\n// Test cases\nconsole.log(isDate(new Date()));           // true\nconsole.log(isDate(new Date('2024-01-01'))); // true\nconsole.log(isDate(Date.now()));           // false (number)\nconsole.log(isDate('2024-01-01'));         // false (string)\nconsole.log(isDate(null));                 // false\nconsole.log(isDate(undefined));            // false\nconsole.log(isDate({}));                   // false\nconsole.log(isDate(new Date('invalid')));  // false (invalid date)\n\n// END_SNIPPET\n"
 }, {
-  "id" : 64,
+  "id" : 109,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is an Error instance, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nfunction isError(value) {\n  return value instanceof Error;\n}\n\n// Test cases\nconsole.log(isError(new Error('test'))); // true\nconsole.log(isError(new TypeError('type error'))); // true\nconsole.log(isError(new RangeError('range error'))); // true\nconsole.log(isError('not an error')); // false\nconsole.log(isError(123)); // false\nconsole.log(isError(null)); // false\nconsole.log(isError(undefined)); // false\nconsole.log(isError({})); // false\nconsole.log(isError({ message: 'fake error' })); // false\n\n// END_SNIPPET\n"
 }, {
-  "id" : 65,
+  "id" : 110,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a function, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nfunction isFunction(value) {\n  return typeof value === 'function';\n}\n\n// Test cases\nconsole.log(isFunction(() => {})); // true\nconsole.log(isFunction(function() {})); // true\nconsole.log(isFunction(async () => {})); // true\nconsole.log(isFunction(class MyClass {})); // true\nconsole.log(isFunction(Math.max)); // true\nconsole.log(isFunction('hello')); // false\nconsole.log(isFunction(123)); // false\nconsole.log(isFunction({})); // false\nconsole.log(isFunction([])); // false\nconsole.log(isFunction(null)); // false\nconsole.log(isFunction(undefined)); // false\n\n// END_SNIPPET\n"
 }, {
-  "id" : 66,
+  "id" : 111,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is null, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nfunction isNull(value) {\n  return value === null;\n}\n\n// Test cases\nconsole.log(isNull(null));           // true\nconsole.log(isNull(undefined));      // false\nconsole.log(isNull(0));              // false\nconsole.log(isNull(''));             // false\nconsole.log(isNull(false));          // false\nconsole.log(isNull([]));             // false\nconsole.log(isNull({}));             // false\nconsole.log(isNull('hello'));        // false\n\n// END_SNIPPET\n"
 }, {
-  "id" : 67,
+  "id" : 112,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a number (including NaN), false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nfunction isNumber(value) {\n  return typeof value === 'number';\n}\n\n// Test cases\nconsole.log(isNumber(42));           // true\nconsole.log(isNumber(3.14));         // true\nconsole.log(isNumber(NaN));          // true\nconsole.log(isNumber(Infinity));     // true\nconsole.log(isNumber(-Infinity));    // true\nconsole.log(isNumber(0));            // true\nconsole.log(isNumber(-0));           // true\nconsole.log(isNumber('42'));         // false\nconsole.log(isNumber(null));         // false\nconsole.log(isNumber(undefined));    // false\nconsole.log(isNumber(true));         // false\nconsole.log(isNumber(false));        // false\nconsole.log(isNumber({}));           // false\nconsole.log(isNumber([]));           // false\n\n// END_SNIPPET\n"
 }, {
-  "id" : 68,
+  "id" : 113,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a string, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nfunction isString(value) {\n  return typeof value === 'string';\n}\n\n// Test cases\nconsole.log(isString('hello'));           // true\nconsole.log(isString(''));                // true\nconsole.log(isString(123));               // false\nconsole.log(isString(null));              // false\nconsole.log(isString(undefined));         // false\nconsole.log(isString(true));              // false\nconsole.log(isString([]));                // false\nconsole.log(isString({}));                // false\nconsole.log(isString(Symbol('test')));    // false\n\n// END_SNIPPET\n"
 }, {
-  "id" : 69,
+  "id" : 114,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is undefined, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nfunction isUndefined(value) {\n  return value === undefined;\n}\n\n// Test cases\nconsole.log(isUndefined(undefined)); // true\nconsole.log(isUndefined(null)); // false\nconsole.log(isUndefined(0)); // false\nconsole.log(isUndefined('')); // false\nconsole.log(isUndefined(false)); // false\nconsole.log(isUndefined({})); // false\nconsole.log(isUndefined([])); // false\nconsole.log(isUndefined('hello')); // false\n\n// END_SNIPPET\n"
 }, {
-  "id" : 70,
+  "id" : 115,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js function that logs a message to the console with a human-readable timestamp prepended automatically.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nfunction logWithTimestamp(message) {\n  const timestamp = new Date().toLocaleString('en-US', {\n    year: 'numeric',\n    month: '2-digit',\n    day: '2-digit',\n    hour: '2-digit',\n    minute: '2-digit',\n    second: '2-digit',\n    hour12: true\n  });\n  console.log(`[${timestamp}] ${message}`);\n}\n\n// Example usage\nlogWithTimestamp('Application started');\nlogWithTimestamp('Processing user request');\nlogWithTimestamp('Database connection established');\nlogWithTimestamp('Error: Connection timeout');\n\n// END_SNIPPET\n"
 }, {
-  "id" : 71,
+  "id" : 116,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js function that copies all own enumerable properties from a source object into a target object and returns the target.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "\nfunction copyProperties(target, source) {\n  for (const key in source) {\n    if (Object.prototype.hasOwnProperty.call(source, key)) {\n      target[key] = source[key];\n    }\n  }\n  return target;\n}\n\n// Test the function\nconst source = { a: 1, b: 2, c: 3 };\nconst target = { d: 4 };\nconst result = copyProperties(target, source);\n\nconsole.log(result); // { d: 4, a: 1, b: 2, c: 3 }\nconsole.log(result === target); // true\n\n// Test with inherited properties (should not be copied)\nconst sourceWithInheritance = Object.create({ inherited: 'value' });\nsourceWithInheritance.own = 'property';\nconst target2 = {};\ncopyProperties(target2, sourceWithInheritance);\n\nconsole.log(target2); // { own: 'property' }\nconsole.log(target2.inherited); // undefined\n\n// END_SNIPPET\n"
+  "code" : "\nfunction copyProperties(target, source) {\n  for (const key in source) {\n    if (Object.prototype.hasOwnProperty.call(source, key)) {\n      target[key] = source[key];\n    }\n  }\n  return target;\n}\n\n// Test the function\nconst source = { a: 1, b: 2, c: 3 };\nconst target = { d: 4 };\nconst result = copyProperties(target, source);\n\nconsole.log(result); // { d: 4, a: 1, b: 2, c: 3 }\nconsole.log(result === target); // true\n\n// Test with inherited properties (should not be copied)\nconst parent = { inherited: 'value' };\nconst sourceWithInherited = Object.create(parent);\nsourceWithInherited.own = 'property';\n\nconst target2 = {};\ncopyProperties(target2, sourceWithInherited);\nconsole.log(target2); // { own: 'property' }\nconsole.log(target2.inherited); // undefined\n\n// END_SNIPPET\n"
 }, {
-  "id" : 72,
+  "id" : 117,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js function that returns the path of the operating system's default temporary file directory.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nconst os = require('os');\n\nfunction getTempDirectory() {\n  return os.tmpdir();\n}\n\nconsole.log('Temporary directory:', getTempDirectory());\n\n// END_SNIPPET\n"
 }, {
-  "id" : 73,
+  "id" : 118,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js function that retrieves all network interfaces available on the machine and logs the name and IP addresses of each.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nconst os = require('os');\n\nfunction getNetworkInterfaces() {\n  const interfaces = os.networkInterfaces();\n  \n  for (const [name, addresses] of Object.entries(interfaces)) {\n    console.log(`\\nInterface: ${name}`);\n    \n    addresses.forEach(address => {\n      console.log(`  IP Address: ${address.address}`);\n      console.log(`  Family: ${address.family}`);\n      console.log(`  Internal: ${address.internal}`);\n    });\n  }\n}\n\ngetNetworkInterfaces();\n\n// END_SNIPPET\n"
 }, {
-  "id" : 74,
+  "id" : 119,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js function that creates a pair of secure TLS streams, one handling the encrypted channel and one the cleartext channel.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "\nimport tls from 'tls';\nimport net from 'net';\nimport fs from 'fs';\n\nexport function createSecureTLSStreamPair() {\n  // Create a self-signed certificate for testing\n  const cert = `-----BEGIN CERTIFICATE-----\nMIIBkTCB+wIJAKHHCgVZYYYAMA0GCSqGSIb3DQEBBQUAMBMxETAPBgNVBAMMCGxv\nY2FsaG9zdDAeFw0yMzAxMDEwMDAwMDBaFw0yNDAxMDEwMDAwMDBaMBMxETAPBgNV\nBAMMCGxvY2FsaG9zdDBcMA0GCSqGSIb3DQEBAQUAA0sAMEgCQQDZ+DYlNB3Z8Z8K\n-----END CERTIFICATE-----`;\n\n  const key = `-----BEGIN RSA PRIVATE KEY-----\nMIIBOgIBAAJBANn4NiU0HdnxnwpZ+DYlNB3Z8Z8KZ+DYlNB3Z8Z8KZ+DYlNB3Z8Z\n-----END RSA PRIVATE KEY-----`;\n\n  // Create a pair of connected sockets\n  const { socket1, socket2 } = net.createSocketPair();\n\n  // Wrap socket1 with TLS (encrypted channel)\n  const tlsStream = tls.connect({\n    socket: socket1,\n    rejectUnauthorized: false,\n  });\n\n  // Create a TLS server on socket2 (cleartext channel)\n  const server = tls.createServer(\n    {\n      cert: cert,\n      key: key,\n    },\n    (cleartextStream) => {\n      // Handle the cleartext stream\n      cleartextStream.on('data', (data) => {\n        console.log('Server received:', data.toString());\n      });\n    }\n  );\n\n  // Connect the server to socket2\n  server.emit('connection', socket2);\n\n  return {\n    encryptedStream: tlsStream,\n    cleartextStream: socket2,\n    server: server,\n  };\n}\n\n// Test the function\nconst { encryptedStream, cleartextStream } = createSecureTLSStreamPair();\n\nencryptedStream.on('connect', () => {\n  console.log('TLS connection established');\n  encryptedStream.write('Hello from encrypted channel');\n});\n\nencryptedStream.on('error', (err) => {\n  console.error('TLS error:', err.message);\n});\n\ncleartextStream.on('error', (err) => {\n  console.error('Cleartext error:', err.message);\n});\n\n// END_SNIPPET\n"
+  "code" : "\nimport tls from 'tls';\nimport net from 'net';\nimport fs from 'fs';\n\nexport function createSecureTLSStreamPair() {\n  // Create a pair of connected sockets\n  const server = net.createServer();\n  const serverSocket = net.createConnection({ port: 0 });\n  \n  return new Promise((resolve) => {\n    server.listen(0, () => {\n      const port = server.address().port;\n      const clientSocket = net.createConnection({ port });\n      \n      server.on('connection', (socket) => {\n        // Create TLS server stream from the socket\n        const tlsStream = tls.createSecureContext({\n          key: fs.readFileSync('server.key'),\n          cert: fs.readFileSync('server.cert')\n        });\n        \n        const secureStream = tls.createServer({ key: fs.readFileSync('server.key'), cert: fs.readFileSync('server.cert') }, (secureSocket) => {\n          resolve({\n            encryptedStream: secureSocket,\n            cleartextStream: socket\n          });\n        });\n        \n        secureStream.emit('connection', socket);\n      });\n      \n      // Create TLS client stream\n      const tlsClientStream = tls.connect({\n        port,\n        rejectUnauthorized: false\n      }, () => {\n        server.close();\n        resolve({\n          encryptedStream: tlsClientStream,\n          cleartextStream: clientSocket\n        });\n      });\n    });\n  });\n}\n\n// Alternative simpler implementation using net.createConnection\nexport function createTLSStreamPair() {\n  const net = require('net');\n  const tls = require('tls');\n  \n  // Create a pair of connected sockets\n  const { socket1, socket2 } = net.createConnection();\n  \n  // Wrap one socket with TLS encryption\n  const encryptedStream = tls.createSecureContext();\n  const cleartextStream = socket1;\n  \n  return {\n    encryptedStream,\n    cleartextStream\n  };\n}\n\n// Practical implementation using socket pairs\nexport function createSecureSocketPair() {\n  const net = require('net');\n  const { Duplex } = require('stream');\n  \n  let socket1Data = [];\n  let socket2Data = [];\n  \n  const socket1 = new Duplex({\n    read() {},\n    write(chunk, encoding, callback) {\n      socket2Data.push(chunk);\n      socket2.emit('data', chunk);\n      callback();\n    }\n  });\n  \n  const socket2 = new Duplex({\n    read() {},\n    write(chunk, encoding, callback) {\n      socket1Data.push(chunk);\n      socket1.emit('data', chunk);\n      callback();\n    }\n  });\n  \n  return {\n    encryptedStream: socket1,\n    cleartextStream: socket2\n  };\n}\n\n// END_SNIPPET\n"
 }, {
-  "id" : 75,
+  "id" : 120,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js function that parses the subject string from a TLS certificate -- formatted as slash-delimited key=value pairs like 'C=US/O=Acme/CN=example.com' -- into a plain JavaScript object.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "\nfunction parseCertificateSubject(subjectString) {\n  const subject = {};\n  \n  if (!subjectString) {\n    return subject;\n  }\n  \n  // Split by '/' and filter out empty strings\n  const pairs = subjectString.split('/').filter(pair => pair.length > 0);\n  \n  // Parse each key=value pair\n  for (const pair of pairs) {\n    const [key, ...valueParts] = pair.split('=');\n    const value = valueParts.join('='); // Handle values that might contain '='\n    \n    if (key && value !== undefined) {\n      subject[key.trim()] = value.trim();\n    }\n  }\n  \n  return subject;\n}\n\n// Test the function\nconst testSubject = 'C=US/O=Acme/CN=example.com';\nconsole.log(parseCertificateSubject(testSubject));\n\nconst complexSubject = 'C=US/ST=California/L=San Francisco/O=Acme Inc/OU=Engineering/CN=example.com/emailAddress=admin@example.com';\nconsole.log(parseCertificateSubject(complexSubject));\n\nconst edgeCase = 'CN=example.com/O=Company/C=US';\nconsole.log(parseCertificateSubject(edgeCase));\n\n// END_SNIPPET\n"
+  "code" : "\nfunction parseCertificateSubject(subjectString) {\n  const subject = {};\n  \n  if (!subjectString) {\n    return subject;\n  }\n  \n  // Split by '/' and filter out empty strings\n  const pairs = subjectString.split('/').filter(pair => pair.length > 0);\n  \n  // Parse each key=value pair\n  for (const pair of pairs) {\n    const [key, value] = pair.split('=');\n    if (key && value !== undefined) {\n      subject[key.trim()] = value.trim();\n    }\n  }\n  \n  return subject;\n}\n\n// Test the function\nconst testSubject = 'C=US/O=Acme/CN=example.com';\nconst result = parseCertificateSubject(testSubject);\nconsole.log(result);\n// Output: { C: 'US', O: 'Acme', CN: 'example.com' }\n\nconst testSubject2 = 'C=GB/ST=London/L=London/O=Example Ltd/CN=example.co.uk';\nconst result2 = parseCertificateSubject(testSubject2);\nconsole.log(result2);\n// Output: { C: 'GB', ST: 'London', L: 'London', O: 'Example Ltd', CN: 'example.co.uk' }\n\n// END_SNIPPET\n"
 }, {
-  "id" : 76,
+  "id" : 121,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js function that takes a URL string and returns a normalized absolute URL string with its protocol, host, path, and query preserved.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "\nfunction normalizeUrl(urlString) {\n  try {\n    const url = new URL(urlString);\n    return url.href;\n  } catch (error) {\n    // If the URL is relative or malformed, try to make it absolute\n    if (!urlString.startsWith('http://') && !urlString.startsWith('https://')) {\n      try {\n        const absoluteUrl = new URL(urlString, 'http://localhost');\n        return absoluteUrl.href;\n      } catch (innerError) {\n        throw new Error(`Invalid URL: ${urlString}`);\n      }\n    }\n    throw error;\n  }\n}\n\n// Test cases\nconsole.log(normalizeUrl('https://example.com/path?query=value'));\nconsole.log(normalizeUrl('http://example.com'));\nconsole.log(normalizeUrl('example.com/path'));\nconsole.log(normalizeUrl('https://example.com:8080/path?foo=bar&baz=qux'));\nconsole.log(normalizeUrl('/path/to/resource?id=123'));\n\n// END_SNIPPET\n"
+  "code" : "\nfunction normalizeUrl(urlString) {\n  try {\n    const url = new URL(urlString);\n    return url.href;\n  } catch (error) {\n    // If the URL is relative or missing protocol, try adding https://\n    try {\n      const url = new URL(`https://${urlString}`);\n      return url.href;\n    } catch (innerError) {\n      throw new Error(`Invalid URL: ${urlString}`);\n    }\n  }\n}\n\n// Test cases\nconsole.log(normalizeUrl('https://example.com/path?query=value'));\nconsole.log(normalizeUrl('example.com/path'));\nconsole.log(normalizeUrl('http://example.com'));\nconsole.log(normalizeUrl('example.com'));\nconsole.log(normalizeUrl('https://example.com:8080/path?a=1&b=2#hash'));\n\n// END_SNIPPET\n"
 }, {
-  "id" : 77,
+  "id" : 122,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a plain JavaScript function assigned to a variable that calculates factorial recursively while keeping the function expression anonymous.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nconst factorial = function(n) {\n  if (n < 0) {\n    throw new Error(\"Factorial is not defined for negative numbers\");\n  }\n  if (n === 0 || n === 1) {\n    return 1;\n  }\n  return n * factorial(n - 1);\n};\n\nconsole.log(factorial(5));\nconsole.log(factorial(0));\nconsole.log(factorial(10));\n\n// END_SNIPPET\n"
 }, {
-  "id" : 78,
+  "id" : 123,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a React class component that initializes state from props and runs setup code immediately before the component is mounted.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "\nimport React from 'react';\n\nclass MyComponent extends React.Component {\n  constructor(props) {\n    super(props);\n    this.state = {\n      count: props.initialCount || 0,\n      message: props.initialMessage || 'Hello'\n    };\n  }\n\n  componentWillMount() {\n    console.log('Setup code running before mount');\n    this.setState({ isReady: true });\n    this.setupData();\n  }\n\n  setupData() {\n    console.log('Initializing data from props:', this.props);\n    if (this.props.onSetup) {\n      this.props.onSetup();\n    }\n  }\n\n  render() {\n    return (\n      <div>\n        <h1>{this.state.message}</h1>\n        <p>Count: {this.state.count}</p>\n        <p>Ready: {this.state.isReady ? 'Yes' : 'No'}</p>\n      </div>\n    );\n  }\n}\n\nexport default MyComponent;\n// END_SNIPPET\n"
+  "code" : "\nimport React from 'react';\n\nclass MyComponent extends React.Component {\n  constructor(props) {\n    super(props);\n    this.state = {\n      count: props.initialCount || 0,\n      message: props.initialMessage || 'Hello'\n    };\n  }\n\n  componentWillMount() {\n    console.log('Setup code running before mount');\n    this.setupData();\n  }\n\n  setupData() {\n    console.log('Initializing with props:', this.props);\n    this.setState({\n      isReady: true,\n      timestamp: new Date().toISOString()\n    });\n  }\n\n  render() {\n    return (\n      <div>\n        <h1>{this.state.message}</h1>\n        <p>Count: {this.state.count}</p>\n        <p>Ready: {this.state.isReady ? 'Yes' : 'No'}</p>\n        {this.state.timestamp && <p>Initialized at: {this.state.timestamp}</p>}\n      </div>\n    );\n  }\n}\n\nexport default MyComponent;\n// END_SNIPPET\n"
 }, {
-  "id" : 79,
+  "id" : 124,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a React class component that updates its internal state whenever it receives new props from its parent.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nimport React from 'react';\n\nclass MyComponent extends React.Component {\n  constructor(props) {\n    super(props);\n    this.state = {\n      value: props.initialValue || ''\n    };\n  }\n\n  componentDidUpdate(prevProps) {\n    if (prevProps.initialValue !== this.props.initialValue) {\n      this.setState({ value: this.props.initialValue });\n    }\n  }\n\n  render() {\n    return (\n      <div>\n        <p>Current value: {this.state.value}</p>\n        <input\n          type=\"text\"\n          value={this.state.value}\n          onChange={(e) => this.setState({ value: e.target.value })}\n        />\n      </div>\n    );\n  }\n}\n\nexport default MyComponent;\n\n// END_SNIPPET\n"
 }, {
-  "id" : 80,
+  "id" : 125,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a React class component that records the current scroll position immediately before it updates after props or state changes.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "\nimport React from 'react';\n\nclass ScrollPositionRecorder extends React.Component {\n  constructor(props) {\n    super(props);\n    this.state = {\n      scrollPosition: 0,\n      items: Array.from({ length: 50 }, (_, i) => `Item ${i + 1}`)\n    };\n  }\n\n  getSnapshotBeforeUpdate(prevProps, prevState) {\n    // Record scroll position before update\n    const scrollPosition = window.scrollY || document.documentElement.scrollTop;\n    console.log('Scroll position before update:', scrollPosition);\n    return scrollPosition;\n  }\n\n  componentDidUpdate(prevProps, prevState, snapshot) {\n    // snapshot contains the scroll position from getSnapshotBeforeUpdate\n    if (snapshot !== null) {\n      console.log('Recorded scroll position:', snapshot);\n      this.setState({ scrollPosition: snapshot });\n    }\n  }\n\n  addItem = () => {\n    this.setState(prevState => ({\n      items: [...prevState.items, `Item ${prevState.items.length + 1}`]\n    }));\n  };\n\n  render() {\n    return (\n      <div style={{ padding: '20px' }}>\n        <button onClick={this.addItem}>Add Item</button>\n        <p>Current scroll position: {this.state.scrollPosition}px</p>\n        <div style={{ height: '100vh', overflow: 'auto' }}>\n          {this.state.items.map((item, index) => (\n            <div key={index} style={{ padding: '10px', borderBottom: '1px solid #ccc' }}>\n              {item}\n            </div>\n          ))}\n        </div>\n      </div>\n    );\n  }\n}\n\nexport default ScrollPositionRecorder;\n\n// END_SNIPPET"
+  "code" : "\nimport React from 'react';\n\nclass ScrollPositionRecorder extends React.Component {\n  constructor(props) {\n    super(props);\n    this.state = {\n      scrollPosition: 0,\n      items: Array.from({ length: 50 }, (_, i) => `Item ${i + 1}`)\n    };\n  }\n\n  getSnapshotBeforeUpdate(prevProps, prevState) {\n    // Record scroll position before update\n    const scrollPosition = window.scrollY || document.documentElement.scrollTop;\n    console.log('Scroll position before update:', scrollPosition);\n    return scrollPosition;\n  }\n\n  componentDidUpdate(prevProps, prevState, snapshot) {\n    // snapshot contains the scroll position from getSnapshotBeforeUpdate\n    if (snapshot !== null) {\n      console.log('Recorded scroll position:', snapshot);\n      this.setState({ scrollPosition: snapshot });\n    }\n  }\n\n  addItem = () => {\n    this.setState(prevState => ({\n      items: [...prevState.items, `Item ${prevState.items.length + 1}`]\n    }));\n  };\n\n  render() {\n    return (\n      <div style={{ padding: '20px' }}>\n        <h1>Scroll Position Recorder</h1>\n        <button onClick={this.addItem}>Add Item</button>\n        <p>Current recorded scroll position: {this.state.scrollPosition}px</p>\n        <div style={{ marginTop: '20px' }}>\n          {this.state.items.map((item, index) => (\n            <div key={index} style={{ padding: '10px', margin: '10px 0', border: '1px solid #ccc' }}>\n              {item}\n            </div>\n          ))}\n        </div>\n      </div>\n    );\n  }\n}\n\nexport default ScrollPositionRecorder;\n// END_SNIPPET"
 }, {
-  "id" : 81,
+  "id" : 126,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a JavaScript function that declares a counter variable, increments it, and returns the final value.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nfunction createCounter() {\n  let counter = 0;\n  \n  function increment() {\n    counter++;\n    return counter;\n  }\n  \n  return increment;\n}\n\nconst myCounter = createCounter();\nconsole.log(myCounter()); // 1\nconsole.log(myCounter()); // 2\nconsole.log(myCounter()); // 3\nconsole.log(myCounter()); // 4\nconsole.log(myCounter()); // 5\n\n// END_SNIPPET\n"
 }, {
-  "id" : 82,
+  "id" : 127,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a JavaScript function that takes a string containing a simple mathematical expression and returns the computed result.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "\nconst Anthropic = require(\"@anthropic-ai/sdk\");\n\nconst client = new Anthropic();\n\nasync function evaluateMathExpression(expression) {\n  const message = await client.messages.create({\n    model: \"claude-3-5-sonnet-20241022\",\n    max_tokens: 1024,\n    messages: [\n      {\n        role: \"user\",\n        content: `Evaluate this mathematical expression and return only the numerical result: ${expression}`,\n      },\n    ],\n  });\n\n  const result = message.content[0].text;\n  return parseFloat(result);\n}\n\nasync function main() {\n  const expressions = [\"2 + 3\", \"10 * 5\", \"100 / 4\", \"7 - 2\", \"2 ** 3\"];\n\n  for (const expr of expressions) {\n    const result = await evaluateMathExpression(expr);\n    console.log(`${expr} = ${result}`);\n  }\n}\n\nmain();\n// END_SNIPPET"
+  "code" : "\nconst Anthropic = require(\"@anthropic-ai/sdk\");\n\nconst client = new Anthropic();\n\nasync function evaluateMathExpression(expression) {\n  const message = await client.messages.create({\n    model: \"claude-3-5-sonnet-20241022\",\n    max_tokens: 1024,\n    messages: [\n      {\n        role: \"user\",\n        content: `Evaluate this mathematical expression and return only the numerical result: ${expression}`,\n      },\n    ],\n  });\n\n  const result = message.content[0].text.trim();\n  return parseFloat(result);\n}\n\nasync function main() {\n  const expressions = [\"2 + 3 * 4\", \"10 / 2 - 3\", \"(5 + 5) * 2\"];\n\n  for (const expr of expressions) {\n    const result = await evaluateMathExpression(expr);\n    console.log(`${expr} = ${result}`);\n  }\n}\n\nmain();\n// END_SNIPPET"
 }, {
-  "id" : 83,
+  "id" : 128,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js script that pads a short string on the left with zeros until it reaches a specified length.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "\nfunction padLeftWithZeros(str, length) {\n  return String(str).padStart(length, '0');\n}\n\n// Example usage\nconst testCases = [\n  { str: '42', length: 5 },\n  { str: 'abc', length: 8 },\n  { str: '1', length: 3 },\n  { str: '12345', length: 3 },\n  { str: 'hello', length: 10 }\n];\n\nconsole.log('Padding strings with zeros on the left:\\n');\ntestCases.forEach(({ str, length }) => {\n  const padded = padLeftWithZeros(str, length);\n  console.log(`padLeftWithZeros('${str}', ${length}) => '${padded}'`);\n});\n\n// END_SNIPPET\n"
+  "code" : "\nfunction padLeftWithZeros(str, length) {\n  return String(str).padStart(length, '0');\n}\n\n// Example usage\nconst testCases = [\n  { input: '42', length: 5 },\n  { input: '7', length: 3 },\n  { input: 'abc', length: 6 },\n  { input: '123', length: 3 },\n  { input: '1', length: 8 }\n];\n\nconsole.log('Padding strings with zeros on the left:\\n');\ntestCases.forEach(({ input, length }) => {\n  const padded = padLeftWithZeros(input, length);\n  console.log(`Input: \"${input}\", Target length: ${length} => \"${padded}\"`);\n});\n\n// END_SNIPPET\n"
 }, {
-  "id" : 84,
+  "id" : 129,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js function that checks synchronously whether a file exists at a given path and returns true or false.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nconst fs = require('fs');\n\nfunction fileExists(filePath) {\n  try {\n    fs.accessSync(filePath, fs.constants.F_OK);\n    return true;\n  } catch (err) {\n    return false;\n  }\n}\n\n// Test the function\nconsole.log(fileExists('./package.json')); // true if file exists\nconsole.log(fileExists('./nonexistent.txt')); // false\n\n// END_SNIPPET\n"
 }, {
-  "id" : 85,
+  "id" : 130,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a Node.js function that parses a URL query string like \"name=Alex&age=30\" into key-value pairs.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nfunction parseQueryString(queryString) {\n  const params = new URLSearchParams(queryString);\n  const result = {};\n  \n  for (const [key, value] of params.entries()) {\n    result[key] = value;\n  }\n  \n  return result;\n}\n\n// Test the function\nconst queryString = \"name=Alex&age=30\";\nconst parsed = parseQueryString(queryString);\nconsole.log(parsed);\n\n// END_SNIPPET\n"
 }, {
-  "id" : 86,
+  "id" : 131,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a React component that stores a click count and increments it when a button is clicked.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nimport React, { useState } from 'react';\n\nexport default function ClickCounter() {\n  const [count, setCount] = useState(0);\n\n  const handleClick = () => {\n    setCount(count + 1);\n  };\n\n  return (\n    <div style={{ padding: '20px', textAlign: 'center' }}>\n      <h1>Click Counter</h1>\n      <p style={{ fontSize: '24px', marginBottom: '20px' }}>\n        Count: {count}\n      </p>\n      <button\n        onClick={handleClick}\n        style={{\n          padding: '10px 20px',\n          fontSize: '16px',\n          cursor: 'pointer',\n          backgroundColor: '#007bff',\n          color: 'white',\n          border: 'none',\n          borderRadius: '4px'\n        }}\n      >\n        Click Me\n      </button>\n    </div>\n  );\n}\n\n// END_SNIPPET\n"
 }, {
-  "id" : 87,
+  "id" : 132,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write the React entry-point code that mounts an App component into a DOM element with the id \"root\".\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nimport React from 'react';\nimport ReactDOM from 'react-dom/client';\nimport App from './App';\n\nconst root = ReactDOM.createRoot(document.getElementById('root'));\nroot.render(\n  <React.StrictMode>\n    <App />\n  </React.StrictMode>\n);\n\n// END_SNIPPET\n"
 }, {
-  "id" : 88,
+  "id" : 133,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write the React entry-point code that hydrates a server-rendered App component into a DOM element with the id \"root\".\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nimport React from 'react';\nimport { hydrateRoot } from 'react-dom/client';\nimport App from './App';\n\nconst container = document.getElementById('root');\nhydrateRoot(container, <App />);\n\n// END_SNIPPET\n"
 }, {
-  "id" : 89,
+  "id" : 134,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write React code that unmounts an existing application from a DOM element after it is no longer needed.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
-  "code" : "\nimport React, { useState } from 'react';\nimport ReactDOM from 'react-dom/client';\n\nfunction App() {\n  const [isAppMounted, setIsAppMounted] = useState(true);\n\n  const handleUnmount = () => {\n    setIsAppMounted(false);\n    setTimeout(() => {\n      const root = ReactDOM.createRoot(document.getElementById('root'));\n      root.unmount();\n    }, 0);\n  };\n\n  if (!isAppMounted) {\n    return null;\n  }\n\n  return (\n    <div>\n      <h1>React Application</h1>\n      <p>This is a sample React application.</p>\n      <button onClick={handleUnmount}>Unmount Application</button>\n    </div>\n  );\n}\n\nconst root = ReactDOM.createRoot(document.getElementById('root'));\nroot.render(<App />);\n\n// END_SNIPPET\n"
+  "code" : "\nimport React from 'react';\nimport ReactDOM from 'react-dom/client';\n\n// Sample application component\nfunction App() {\n  return <div>Hello, React Application!</div>;\n}\n\n// Create a root element in the DOM\nconst rootElement = document.createElement('div');\nrootElement.id = 'app-root';\ndocument.body.appendChild(rootElement);\n\n// Mount the React application\nconst root = ReactDOM.createRoot(rootElement);\nroot.render(<App />);\n\n// Unmount the application after 5 seconds\nsetTimeout(() => {\n  root.unmount();\n  // Optionally remove the root element from the DOM\n  document.body.removeChild(rootElement);\n  console.log('React application unmounted successfully');\n}, 5000);\n\n// END_SNIPPET\n"
 }, {
-  "id" : 90,
+  "id" : 135,
   "model" : "claude-haiku-4-5-20251001",
   "prompt" : "Write a JavaScript module that imports a helper function from another local file and uses it to transform an input value.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
   "complete" : true,
   "code" : "\nimport Anthropic from \"@anthropic-ai/sdk\";\n\n// Helper function to transform input\nfunction transformInput(input) {\n  return input.toUpperCase().split(\"\").reverse().join(\"\");\n}\n\n// Main module that uses the helper function\nasync function processWithClaude(userInput) {\n  const client = new Anthropic();\n\n  // Transform the input using helper function\n  const transformedInput = transformInput(userInput);\n\n  const message = await client.messages.create({\n    model: \"claude-3-5-sonnet-20241022\",\n    max_tokens: 1024,\n    messages: [\n      {\n        role: \"user\",\n        content: `The input \"${userInput}\" was transformed to \"${transformedInput}\". Please explain what transformation was applied.`,\n      },\n    ],\n  });\n\n  return message.content[0].text;\n}\n\n// Execute the module\nconst result = await processWithClaude(\"hello world\");\nconsole.log(result);\n\n// END_SNIPPET\n"
+}, {
+  "id" : 136,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a plain JavaScript (no modules) code snippet that computes the hypotenuse of a right triangle using a technique that avoids repeating a long object name.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "var result = (function() {\n  var m = Math;\n  var a = 3, b = 4;\n  return m.sqrt(m.pow(a, 2) + m.pow(b, 2));\n})();\n\nconsole.log(result); // END_SNIPPET"
+}, {
+  "id" : 137,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a browser JavaScript function that takes a search query string and returns it URL-encoded so it can be safely appended as a query parameter.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function encodeSearchQuery(query) {\n  return encodeURIComponent(query);\n}\n// END_SNIPPET"
+}, {
+  "id" : 138,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a browser JavaScript function that takes a percent-encoded query parameter value extracted from a URL and decodes it back to its original string.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function decodeQueryParamValue(encodedValue) {\n  return decodeURIComponent(encodedValue.replace(/\\+/g, ' '));\n}\n// END_SNIPPET"
+}, {
+  "id" : 139,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write browser JavaScript that adds an <h1> greeting to the page. The script runs inline inside the HTML <body> while the page is still loading.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "document.write('<h1>Hello, World!</h1>');\n// END_SNIPPET"
+}, {
+  "id" : 140,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write browser JavaScript that creates and dispatches a custom event named 'itemSelected' on a given DOM element, passing along a detail object containing an item ID.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function dispatchItemSelected(element, itemId) {\n  var event = new CustomEvent('itemSelected', {\n    bubbles: true,\n    cancelable: true,\n    detail: {\n      itemId: itemId\n    }\n  });\n  element.dispatchEvent(event);\n}\n\nvar targetElement = document.getElementById('my-element');\nif (targetElement) {\n  dispatchItemSelected(targetElement, 42);\n}\n// END_SNIPPET"
+}, {
+  "id" : 141,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write browser JavaScript for a Copy button that, when clicked, copies the text content of a <p> element to the user's clipboard.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "document.addEventListener('DOMContentLoaded', () => {\n  const button = document.createElement('button');\n  button.textContent = 'Copy';\n  document.body.appendChild(button);\n\n  const paragraph = document.querySelector('p');\n\n  button.addEventListener('click', () => {\n    if (!paragraph) return;\n    const text = paragraph.textContent;\n    navigator.clipboard.writeText(text).then(() => {\n      button.textContent = 'Copied!';\n      setTimeout(() => { button.textContent = 'Copy'; }, 2000);\n    }).catch(err => {\n      console.error('Failed to copy:', err);\n    });\n  });\n});\n// END_SNIPPET"
+}, {
+  "id" : 142,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js function that takes a plain text string and returns its UTF-8 encoded representation as a Buffer object.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function encodeToUtf8Buffer(text) {\n  return Buffer.from(text, 'utf8');\n}\n\n// END_SNIPPET"
+}, {
+  "id" : 143,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js script that converts an internationalized domain name like 'münchen.de' to its Punycode ASCII-compatible encoding (ACE) form.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const punycode = require('punycode/');\n\nconst domain = 'münchen.de';\nconst encoded = domain\n  .split('.')\n  .map(label => {\n    if (/[^\\x00-\\x7F]/.test(label)) {\n      return 'xn--' + punycode.encode(label);\n    }\n    return label;\n  })\n  .join('.');\n\nconsole.log(`Original: ${domain}`);\nconsole.log(`Punycode: ${encoded}`);\n// END_SNIPPET"
+}, {
+  "id" : 144,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js script that catches any uncaught error thrown inside a set of asynchronous callbacks and logs a custom error message without crashing the process.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "process.on('uncaughtException', (err) => {\n  console.error('Custom error message: Uncaught exception caught -', err.message);\n});\n\nprocess.on('unhandledRejection', (reason) => {\n  console.error('Custom error message: Unhandled promise rejection -', reason instanceof Error ? reason.message : reason);\n});\n\nfunction runAsyncCallbacks() {\n  setTimeout(() => {\n    throw new Error('Error from setTimeout callback');\n  }, 100);\n\n  setTimeout(() => {\n    Promise.reject(new Error('Unhandled promise rejection from setTimeout'));\n  }, 200);\n\n  setTimeout(() => {\n    throw new Error('Another error from a different async callback');\n  }, 300);\n\n  setTimeout(() => {\n    console.log('Process is still running after caught errors.');\n  }, 500);\n}\n\nrunAsyncCallbacks();\n// END_SNIPPET"
+}, {
+  "id" : 145,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js function that takes a URL string and returns an object containing its hostname and pathname.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const { URL } = require('url');\n\nfunction parseUrl(urlString) {\n  const parsed = new URL(urlString);\n  return {\n    hostname: parsed.hostname,\n    pathname: parsed.pathname,\n  };\n}\n\nmodule.exports = parseUrl;\n// END_SNIPPET"
+}, {
+  "id" : 146,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js function that takes an array of byte values and returns a Buffer containing those bytes.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function bytesToBuffer(byteArray) {\n  return Buffer.from(byteArray);\n}\n// END_SNIPPET"
+}, {
+  "id" : 147,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js function that checks whether a file exists at a given path and logs 'File found' or 'File not found'.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const fs = require('fs');\n\nfunction checkFileExists(filePath) {\n  fs.access(filePath, fs.constants.F_OK, (err) => {\n    if (err) {\n      console.log('File not found');\n    } else {\n      console.log('File found');\n    }\n  });\n}\n\ncheckFileExists('./example.txt');\n// END_SNIPPET"
+}, {
+  "id" : 148,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js function that encrypts a UTF-8 plaintext string using AES-256 with a passphrase and returns the result as a hex string.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const crypto = require('crypto');\n\nfunction encrypt(plaintext, passphrase) {\n  const salt = crypto.randomBytes(16);\n  const key = crypto.scryptSync(passphrase, salt, 32);\n  const iv = crypto.randomBytes(16);\n  const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);\n  const encrypted = Buffer.concat([\n    cipher.update(plaintext, 'utf8'),\n    cipher.final()\n  ]);\n  return Buffer.concat([salt, iv, encrypted]).toString('hex');\n}\n\nmodule.exports = { encrypt };\n// END_SNIPPET"
+}, {
+  "id" : 149,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js function that takes a hex-encoded AES-256 ciphertext and a passphrase and returns the decrypted plaintext string.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const crypto = require('crypto');\n\nfunction decryptAES256(hexCiphertext, passphrase) {\n  const cipherBuffer = Buffer.from(hexCiphertext, 'hex');\n  const salt = cipherBuffer.slice(0, 16);\n  const iv = cipherBuffer.slice(16, 32);\n  const encrypted = cipherBuffer.slice(32);\n  const key = crypto.scryptSync(passphrase, salt, 32);\n  const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);\n  const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()]);\n  return decrypted.toString('utf8');\n}\n\nfunction encryptAES256(plaintext, passphrase) {\n  const salt = crypto.randomBytes(16);\n  const iv = crypto.randomBytes(16);\n  const key = crypto.scryptSync(passphrase, salt, 32);\n  const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);\n  const encrypted = Buffer.concat([cipher.update(plaintext, 'utf8'), cipher.final()]);\n  return Buffer.concat([salt, iv, encrypted]).toString('hex');\n}\n\nconst passphrase = 'my-secret-passphrase';\nconst plaintext = 'Hello, World!';\nconst hex = encryptAES256(plaintext, passphrase);\nconsole.log('Encrypted (hex):', hex);\nconst result = decryptAES256(hex, passphrase);\nconsole.log('Decrypted:', result);\n\nmodule.exports = { decryptAES256, encryptAES256 };\n// END_SNIPPET"
+}, {
+  "id" : 150,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is an array, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function isArray(value) {\n  return Array.isArray(value);\n}\n\nmodule.exports = isArray;\n// END_SNIPPET"
+}, {
+  "id" : 151,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a boolean (true or false), false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function isBoolean(value) {\n  return typeof value === 'boolean';\n}\n\nmodule.exports = isBoolean;\n// END_SNIPPET"
+}, {
+  "id" : 152,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a Buffer instance, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function isBuffer(value) {\n  return Buffer.isBuffer(value);\n}\n\nmodule.exports = isBuffer;\n// END_SNIPPET"
+}, {
+  "id" : 153,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a Date object, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function isDate(value) {\n  return value instanceof Date && !isNaN(value.getTime());\n}\n\nmodule.exports = isDate;\n// END_SNIPPET"
+}, {
+  "id" : 154,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is an Error instance, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function isError(value) {\n  return value instanceof Error;\n}\n\nmodule.exports = isError;\n// END_SNIPPET"
+}, {
+  "id" : 155,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a function, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function isFunction(value) {\n  return typeof value === 'function';\n}\n\nmodule.exports = isFunction;\n// END_SNIPPET"
+}, {
+  "id" : 156,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is null, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function isNull(value) {\n  return value === null;\n}\n\nmodule.exports = { isNull };\n// END_SNIPPET"
+}, {
+  "id" : 157,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a number (including NaN), false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function isNumber(value) {\n  return typeof value === 'number';\n}\n\nmodule.exports = isNumber;\n// END_SNIPPET"
+}, {
+  "id" : 158,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is a string, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function isString(value) {\n  return typeof value === 'string' || value instanceof String;\n}\n\nmodule.exports = isString;\n// END_SNIPPET"
+}, {
+  "id" : 159,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js utility function that takes a single value and returns true if it is undefined, false otherwise.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function isUndefined(value) {\n  return value === undefined;\n}\n\nmodule.exports = { isUndefined };\n// END_SNIPPET"
+}, {
+  "id" : 160,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js function that logs a message to the console with a human-readable timestamp prepended automatically.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function logWithTimestamp(message) {\n  const now = new Date();\n  const timestamp = now.toLocaleString('en-US', {\n    year: 'numeric',\n    month: 'short',\n    day: '2-digit',\n    hour: '2-digit',\n    minute: '2-digit',\n    second: '2-digit',\n    hour12: true\n  });\n  console.log(`[${timestamp}] ${message}`);\n}\n\nlogWithTimestamp('Server started successfully.');\nlogWithTimestamp('Processing request from user.');\n// END_SNIPPET"
+}, {
+  "id" : 161,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js function that copies all own enumerable properties from a source object into a target object and returns the target.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function assign(target, source) {\n  if (target == null) throw new TypeError('Target cannot be null or undefined');\n  const keys = Object.keys(source);\n  for (let i = 0; i < keys.length; i++) {\n    target[keys[i]] = source[keys[i]];\n  }\n  return target;\n}\n\nmodule.exports = assign;\n// END_SNIPPET"
+}, {
+  "id" : 162,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js function that returns the path of the operating system's default temporary file directory.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const os = require('os');\n\nfunction getTempDir() {\n  return os.tmpdir();\n}\n\nmodule.exports = { getTempDir };\n// END_SNIPPET"
+}, {
+  "id" : 163,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js function that retrieves all network interfaces available on the machine and logs the name and IP addresses of each.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const os = require('os');\n\nfunction logNetworkInterfaces() {\n  const interfaces = os.networkInterfaces();\n\n  for (const [name, addresses] of Object.entries(interfaces)) {\n    console.log(`Interface: ${name}`);\n    for (const addr of addresses) {\n      console.log(`  Family: ${addr.family}, Address: ${addr.address}, Internal: ${addr.internal}`);\n    }\n  }\n}\n\nlogNetworkInterfaces();\n// END_SNIPPET"
+}, {
+  "id" : 164,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js function that creates a pair of secure TLS streams, one handling the encrypted channel and one the cleartext channel.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const tls = require('tls');\nconst { Duplex } = require('stream');\n\nfunction createTLSStreamPair(options = {}) {\n  const pair = tls.createSecurePair(\n    options.credentials || tls.createSecureContext(options),\n    options.isServer || false,\n    options.requestCert || false,\n    options.rejectUnauthorized !== false\n  );\n  return pair;\n}\n\nfunction createSecureStreamPair(tlsOptions = {}) {\n  const { PassThrough } = require('stream');\n\n  const encryptedStream = new PassThrough();\n  const cleartextStream = new PassThrough();\n\n  const secureContext = tls.createSecureContext(tlsOptions);\n\n  const pair = tls.createSecurePair(\n    secureContext,\n    tlsOptions.isServer || false,\n    tlsOptions.requestCert || false,\n    tlsOptions.rejectUnauthorized !== false\n  );\n\n  pair.encrypted.pipe(encryptedStream);\n  encryptedStream.pipe(pair.encrypted);\n\n  pair.cleartext.pipe(cleartextStream);\n  cleartextStream.pipe(pair.cleartext);\n\n  pair.on('secure', () => {\n    console.log('TLS handshake complete');\n  });\n\n  return {\n    encrypted: pair.encrypted,\n    cleartext: pair.cleartext,\n    pair,\n  };\n}\n\nmodule.exports = { createSecureStreamPair };\n// END_SNIPPET"
+}, {
+  "id" : 165,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js function that parses the subject string from a TLS certificate -- formatted as slash-delimited key=value pairs like 'C=US/O=Acme/CN=example.com' -- into a plain JavaScript object.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function parseCertSubject(subject) {\n  if (!subject || typeof subject !== 'string') return {};\n  return subject\n    .split('/')\n    .filter(Boolean)\n    .reduce((obj, pair) => {\n      const idx = pair.indexOf('=');\n      if (idx === -1) return obj;\n      const key = pair.slice(0, idx).trim();\n      const value = pair.slice(idx + 1).trim();\n      if (key) obj[key] = value;\n      return obj;\n    }, {});\n}\n\nmodule.exports = parseCertSubject;\n// END_SNIPPET"
+}, {
+  "id" : 166,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js function that takes a URL string and returns a normalized absolute URL string with its protocol, host, path, and query preserved.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const { URL } = require('url');\n\nfunction normalizeUrl(urlString) {\n  const parsed = new URL(urlString);\n  const protocol = parsed.protocol;\n  const host = parsed.host.toLowerCase();\n  const pathname = parsed.pathname.replace(/\\/+/g, '/').replace(/(.+)\\/$/, '$1') || '/';\n  const search = parsed.search;\n  return `${protocol}//${host}${pathname}${search}`;\n}\n\nmodule.exports = normalizeUrl;\n// END_SNIPPET"
+}, {
+  "id" : 167,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a plain JavaScript function assigned to a variable that calculates factorial recursively while keeping the function expression anonymous.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const factorial = function(n) {\n  if (n < 0) throw new Error(\"Negative numbers are not allowed\");\n  if (n === 0 || n === 1) return 1;\n  return n * factorial(n - 1);\n};\n// END_SNIPPET"
+}, {
+  "id" : 168,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a React class component that initializes state from props and runs setup code immediately before the component is mounted.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "class MyComponent extends React.Component {\n  constructor(props) {\n    super(props);\n    this.state = {\n      value: props.initialValue || '',\n      count: props.initialCount || 0,\n    };\n  }\n\n  componentWillMount() {\n    console.log('Setup code running before mount');\n    this.setState({ ready: true });\n  }\n\n  render() {\n    return (\n      <div>\n        <p>Value: {this.state.value}</p>\n        <p>Count: {this.state.count}</p>\n        <p>Ready: {this.state.ready ? 'Yes' : 'No'}</p>\n      </div>\n    );\n  }\n}\n// END_SNIPPET"
+}, {
+  "id" : 169,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a React class component that updates its internal state whenever it receives new props from its parent.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "class PropsWatcher extends React.Component {\n  constructor(props) {\n    super(props);\n    this.state = {\n      value: props.value,\n    };\n  }\n\n  static getDerivedStateFromProps(nextProps, prevState) {\n    if (nextProps.value !== prevState.value) {\n      return { value: nextProps.value };\n    }\n    return null;\n  }\n\n  render() {\n    return (\n      <div>\n        <p>Current state value: {this.state.value}</p>\n      </div>\n    );\n  }\n}\n\nclass App extends React.Component {\n  constructor(props) {\n    super(props);\n    this.state = { count: 0 };\n  }\n\n  increment() {\n    this.setState((prev) => ({ count: prev.count + 1 }));\n  }\n\n  render() {\n    return (\n      <div>\n        <PropsWatcher value={this.state.count} />\n        <button onClick={() => this.increment()}>Increment</button>\n      </div>\n    );\n  }\n}\n// END_SNIPPET"
+}, {
+  "id" : 170,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a React class component that records the current scroll position immediately before it updates after props or state changes.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "class ScrollTracker extends React.Component {\n  constructor(props) {\n    super(props);\n    this.state = { count: 0 };\n    this.scrollPositionBeforeUpdate = null;\n  }\n\n  getSnapshotBeforeUpdate(prevProps, prevState) {\n    this.scrollPositionBeforeUpdate = window.scrollY;\n    return this.scrollPositionBeforeUpdate;\n  }\n\n  componentDidUpdate(prevProps, prevState, snapshot) {\n    console.log('Scroll position before update:', snapshot);\n  }\n\n  render() {\n    return (\n      React.createElement('div', null,\n        React.createElement('p', null, 'Count: ' + this.state.count),\n        React.createElement('p', null, 'Last scroll before update: ' + this.scrollPositionBeforeUpdate),\n        React.createElement('button', { onClick: () => this.setState(s => ({ count: s.count + 1 })) }, 'Increment')\n      )\n    );\n  }\n}\n// END_SNIPPET"
+}, {
+  "id" : 171,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a JavaScript function that declares a counter variable, increments it, and returns the final value.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function counter() {\n  let count = 0;\n  count++;\n  return count;\n}\n\nconst result = counter();\nconsole.log(result);\n// END_SNIPPET"
+}, {
+  "id" : 172,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a JavaScript function that takes a string containing a simple mathematical expression and returns the computed result.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function evaluateExpression(expression) {\n  const sanitized = expression.replace(/[^0-9+\\-*/().\\s]/g, '');\n  if (!sanitized.trim()) throw new Error('Invalid expression');\n  return Function('\"use strict\"; return (' + sanitized + ')')();\n}\n// END_SNIPPET"
+}, {
+  "id" : 173,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js script that pads a short string on the left with zeros until it reaches a specified length.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const padWithZeros = (str, length) => str.padStart(length, '0');\n\nconst examples = [\n  { str: '42', length: 8 },\n  { str: 'abc', length: 6 },\n  { str: '7', length: 5 },\n  { str: '12345', length: 3 },\n];\n\nexamples.forEach(({ str, length }) => {\n  console.log(`padWithZeros('${str}', ${length}) => '${padWithZeros(str, length)}'`);\n});\n// END_SNIPPET"
+}, {
+  "id" : 174,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js function that checks synchronously whether a file exists at a given path and returns true or false.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "const fs = require('fs');\n\nfunction fileExistsSync(filePath) {\n  try {\n    fs.accessSync(filePath, fs.constants.F_OK);\n    return true;\n  } catch (err) {\n    return false;\n  }\n}\n\nmodule.exports = fileExistsSync;\n// END_SNIPPET"
+}, {
+  "id" : 175,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a Node.js function that parses a URL query string like \"name=Alex&age=30\" into key-value pairs.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "function parseQueryString(queryString) {\n  if (!queryString || typeof queryString !== 'string') return {};\n\n  return queryString\n    .replace(/^\\?/, '')\n    .split('&')\n    .reduce((acc, pair) => {\n      const [key, value] = pair.split('=').map(decodeURIComponent);\n      if (key) acc[key] = value !== undefined ? value : '';\n      return acc;\n    }, {});\n}\n\nconst result = parseQueryString('name=Alex&age=30&city=New%20York');\nconsole.log(result);\n// END_SNIPPET"
+}, {
+  "id" : 176,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a React component that stores a click count and increments it when a button is clicked.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "import React, { useState } from 'react';\n\nfunction ClickCounter() {\n  const [count, setCount] = useState(0);\n\n  return (\n    <div>\n      <p>Click count: {count}</p>\n      <button onClick={() => setCount(count + 1)}>Click me</button>\n    </div>\n  );\n}\n\nexport default ClickCounter;\n// END_SNIPPET"
+}, {
+  "id" : 177,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write the React entry-point code that mounts an App component into a DOM element with the id \"root\".\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "import React from 'react';\nimport ReactDOM from 'react-dom/client';\nimport App from './App';\n\nconst root = ReactDOM.createRoot(document.getElementById('root'));\nroot.render(\n  <React.StrictMode>\n    <App />\n  </React.StrictMode>\n);\n// END_SNIPPET"
+}, {
+  "id" : 178,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write the React entry-point code that hydrates a server-rendered App component into a DOM element with the id \"root\".\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "import React from 'react';\nimport { hydrateRoot } from 'react-dom/client';\nimport App from './App';\n\nconst container = document.getElementById('root');\nhydrateRoot(container, <App />);\n// END_SNIPPET"
+}, {
+  "id" : 179,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write React code that unmounts an existing application from a DOM element after it is no longer needed.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "import React from 'react';\nimport { createRoot } from 'react-dom/client';\n\nfunction App() {\n  return <h1>Hello, World!</h1>;\n}\n\nconst container = document.getElementById('root');\nconst root = createRoot(container);\nroot.render(<App />);\n\nsetTimeout(() => {\n  root.unmount();\n  console.log('Application unmounted');\n}, 3000);\n// END_SNIPPET"
+}, {
+  "id" : 180,
+  "model" : "claude-sonnet-4-6",
+  "prompt" : "Write a JavaScript module that imports a helper function from another local file and uses it to transform an input value.\nReturn only JavaScript code, without explanations or Markdown fences. Do not use TypeScript.",
+  "complete" : true,
+  "code" : "import { transformValue } from './helper.js';\n\nexport function processInput(input) {\n  return transformValue(input);\n}\n\n// helper.js (inline simulation for completeness)\n// In a real project this would be a separate file:\n// export function transformValue(value) {\n//   return String(value).toUpperCase().trim();\n// }\n\nconst result = processInput('  hello world  ');\nconsole.log(result); // \"  HELLO WORLD  \"\n// END_SNIPPET"
 } ]
