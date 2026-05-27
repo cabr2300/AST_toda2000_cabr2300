@@ -79,7 +79,7 @@ public class Initializer {
                     ASTNode root = typeMapper.buildTree(parsed);
                     Context ctx = new Context();
                     int score = pipeline.score(root, ctx);
-                    System.out.println("Snippet " + snippet.id + " modernity score: " + score + "/1");
+                    System.out.println(snippet.model + "-- Snippet " + snippet.id + " modernity score: " + score + "/1");
                     System.out.println();
                     // Add current model as key if it has not been added yet
                     models.computeIfAbsent(snippet.model, k -> new ArrayList<>()).add(score);

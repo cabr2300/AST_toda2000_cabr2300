@@ -34,22 +34,22 @@ public class TypeMapper {
      * @param jsonNode is the current JsonNode.
      * @return an {@link ASTNode}, or {@code null} if the node has no type.
      */
-    private ASTNode buildNode(JsonNode jsonNode, NodeType parentType) {
+    private ASTNode buildNode(JsonNode jsonNode, ASTNode parent) {
         if(jsonNode == null || !jsonNode.isObject() || !jsonNode.has("type")) {
             return null;
         }
         String type = jsonNode.get("type").asText();
         NodeType nodeType = mapType(type);
-        ASTNode node = new ASTNode(nodeType, jsonNode, parentType);
+        ASTNode node = new ASTNode(nodeType, jsonNode, parent);
         Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
         while(fields.hasNext()) {
             JsonNode child = fields.next().getValue();
             if(child.isObject()) {
-                ASTNode childNode = buildNode(child, nodeType);
+                ASTNode childNode = buildNode(child, node);
                 if(childNode != null) node.addChild(childNode);
             } else if(child.isArray()) {
                 for(JsonNode element : child) {
-                    ASTNode childNode = buildNode(element, nodeType);
+                    ASTNode childNode = buildNode(element, node);
                     if(childNode != null) node.addChild(childNode);
                 }
             }
@@ -72,6 +72,7 @@ public class TypeMapper {
             case "ImportDeclaration" -> NodeType.IMPORT_DECLARATION;
             case "Identifier" -> NodeType.IDENTIFIER;
             case "MethodDefinition" -> NodeType.METHOD_DEFINITION;
+            case "Property" -> NodeType.PROPERTY;
             default -> null;
         };
     }

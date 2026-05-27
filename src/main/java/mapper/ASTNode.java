@@ -14,18 +14,18 @@ public class ASTNode {
     private final NodeType type;
     private final List<ASTNode> children;
     private final JsonNode raw;
-    private final NodeType parentType;
+    private final ASTNode parent;
     
     /**
      * Construct the AST node.
      * @param type the syntax category of the node.
      * @param raw the JsonNode containing the raw data
      */
-    public ASTNode(NodeType type, JsonNode raw, NodeType parentType) {
+    public ASTNode(NodeType type, JsonNode raw, ASTNode parent) {
         this.type = type;
         this.children = new ArrayList<>();
         this.raw = raw;
-        this.parentType = parentType;
+        this.parent = parent;
     }
 
     /**
@@ -48,7 +48,16 @@ public class ASTNode {
      * Get the type of the node's parent
      * @return the {@link NodeType} of the parent
      */
-    public NodeType getParentType() { return parentType; }
+    public ASTNode getParent() { return parent; }
+
+    /**
+     * Get the method property of the node.
+     * @return the boolean value of the JsonNode's "method" property, or {@code false} if it doesn't exist.
+     */
+    public boolean isMethod() {
+        if(raw == null) return false;
+        return raw.get("method") != null && raw.get("method").asBoolean();
+    }
 
     /**
      * Get the node's children

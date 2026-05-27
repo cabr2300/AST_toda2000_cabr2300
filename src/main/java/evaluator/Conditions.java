@@ -103,9 +103,11 @@ public final class Conditions {
     /**
      * The condition to confirm whether the node's parent is of a certain type.
      * @param nodeType is the parent {@link NodeType} of the node being tested.
+     * Also confirms that the node's parent is not a {@code PROPERTY} with the "method" property {@code true}.
      * @return whether the node type is a match.
      */
     public static NodeCondition deprecatedUnlessParentIs(NodeType nodeType) {
-        return (node, ctx) -> node.getParentType() != nodeType;
+        return (node, ctx) -> node.getParent().getType() != nodeType
+                && !(node.getParent().getType() == NodeType.PROPERTY && node.getParent().isMethod());
     }
 }

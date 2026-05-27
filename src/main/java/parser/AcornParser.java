@@ -31,6 +31,8 @@ public class AcornParser {
 
         // Create node.js subprocess
         ProcessBuilder pb = new ProcessBuilder("node", scriptPath);
+        pb.redirectErrorStream(false);
+        pb.redirectError(ProcessBuilder.Redirect.INHERIT); // Print errors to console
         Process process = pb.start();
 
         // Write jsSource to the process stdin

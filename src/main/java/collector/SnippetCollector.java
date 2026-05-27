@@ -34,7 +34,9 @@ public class SnippetCollector {
             "Return only one complete JavaScript code snippet.\n" +
             "Do not include explanations or Markdown.\n" +
             "Do not use TypeScript.\n" +
+            "Do not add HTML.\n" +
             "Prefer a concise solution, ideally under 40 lines.\n" +
+            "Do not simulate multiple files by separating code with comments.\n" +
             "End the snippet with this exact comment: // END_SNIPPET";
 
     /**
