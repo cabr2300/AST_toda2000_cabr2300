@@ -42,6 +42,5 @@
   "Write a React component that stores a click count and increments it when a button is clicked.",
   "Write the React entry-point code that mounts an App component into a DOM element with the id \"root\".",
   "Write the React entry-point code that hydrates a server-rendered App component into a DOM element with the id \"root\".",
-  "Write React code that unmounts an existing application from a DOM element after it is no longer needed.",
-  "Write a JavaScript module that imports a helper function from another local file and uses it to transform an input value."
+  "Write React code that unmounts an existing application from a DOM element after it is no longer needed."
 ]
