@@ -229,9 +229,9 @@
 }, {
   "id" : 39,
   "model" : "gpt-5.4-nano-2026-03-17",
-  "prompt" : "Write a Node.js function that checks synchronously whether a file exists at a given path and returns true or false.",
+  "prompt" : "Write a Node.js function that checks whether a file exists at a given path and invokes a callback with the result.",
   "complete" : true,
-  "code" : "const fs = require('fs');\n\nfunction fileExistsSync(path) {\n  try {\n    fs.accessSync(path, fs.constants.F_OK);\n    return true;\n  } catch {\n    return false;\n  }\n}\n\n// END_SNIPPET\n"
+  "code" : "const fs = require('fs');\n\nfunction fileExists(path, callback) {\n  fs.access(path, fs.constants.F_OK, (err) => callback(!err));\n}\n\n// END_SNIPPET\n"
 }, {
   "id" : 40,
   "model" : "gpt-5.4-nano-2026-03-17",
@@ -493,9 +493,9 @@
 }, {
   "id" : 84,
   "model" : "gpt-5.4-2026-03-05",
-  "prompt" : "Write a Node.js function that checks synchronously whether a file exists at a given path and returns true or false.",
+  "prompt" : "Write a Node.js function that checks whether a file exists at a given path and invokes a callback with the result.",
   "complete" : true,
-  "code" : "const fs = require('fs');\n\nfunction fileExists(path) {\n  try {\n    return fs.existsSync(path);\n  } catch {\n    return false;\n  }\n}\n\n// END_SNIPPET"
+  "code" : "const fs = require('fs');\n\nfunction fileExists(path, callback) {\n  fs.access(path, fs.constants.F_OK, (err) => {\n    callback(!err);\n  });\n}\n\nmodule.exports = fileExists;\n\n// END_SNIPPET"
 }, {
   "id" : 85,
   "model" : "gpt-5.4-2026-03-05",
@@ -757,9 +757,9 @@
 }, {
   "id" : 129,
   "model" : "claude-haiku-4-5-20251001",
-  "prompt" : "Write a Node.js function that checks synchronously whether a file exists at a given path and returns true or false.",
+  "prompt" : "Write a Node.js function that checks whether a file exists at a given path and invokes a callback with the result.",
   "complete" : true,
-  "code" : "\nconst fs = require('fs');\n\nfunction fileExists(filePath) {\n  try {\n    fs.accessSync(filePath, fs.constants.F_OK);\n    return true;\n  } catch (err) {\n    return false;\n  }\n}\n\n// Test the function\nconsole.log(fileExists('./package.json')); // true if file exists\nconsole.log(fileExists('./nonexistent.txt')); // false\n\n// END_SNIPPET\n"
+  "code" : "\nconst fs = require('fs');\n\nfunction fileExists(filePath, callback) {\n  fs.access(filePath, fs.constants.F_OK, (err) => {\n    callback(err === null);\n  });\n}\n\n// Example usage\nfileExists('./test.txt', (exists) => {\n  console.log('File exists:', exists);\n});\n\nfileExists('./nonexistent.txt', (exists) => {\n  console.log('File exists:', exists);\n});\n\n// END_SNIPPET\n"
 }, {
   "id" : 130,
   "model" : "claude-haiku-4-5-20251001",
@@ -1021,9 +1021,9 @@
 }, {
   "id" : 174,
   "model" : "claude-sonnet-4-6",
-  "prompt" : "Write a Node.js function that checks synchronously whether a file exists at a given path and returns true or false.",
+  "prompt" : "Write a Node.js function that checks whether a file exists at a given path and invokes a callback with the result.",
   "complete" : true,
-  "code" : "const fs = require('fs');\n\nfunction fileExistsSync(filePath) {\n  try {\n    fs.accessSync(filePath, fs.constants.F_OK);\n    return true;\n  } catch {\n    return false;\n  }\n}\n\nmodule.exports = { fileExistsSync };\n// END_SNIPPET"
+  "code" : "const fs = require('fs');\n\nfunction checkFileExists(filePath, callback) {\n  fs.access(filePath, fs.constants.F_OK, (err) => {\n    if (err) {\n      callback(null, false);\n    } else {\n      callback(null, true);\n    }\n  });\n}\n\ncheckFileExists('./example.txt', (err, exists) => {\n  if (err) {\n    console.error('Error checking file:', err);\n  } else {\n    console.log('File exists:', exists);\n  }\n});\n// END_SNIPPET"
 }, {
   "id" : 175,
   "model" : "claude-sonnet-4-6",

@@ -229,9 +229,9 @@
 }, {
   "id" : 39,
   "model" : "gpt-5.4-nano-2026-03-17",
-  "prompt" : "Write a Node.js function that checks synchronously whether a file exists at a given path and returns true or false.\nUse current, recommended Node.js APIs. Avoid deprecated, legacy, discouraged, or outdated patterns.\nUse modern ES2020+ JavaScript conventions.",
+  "prompt" : "Write a Node.js function that checks whether a file exists at a given path and invokes a callback with the result.\nUse current, recommended Node.js APIs. Avoid deprecated, legacy, discouraged, or outdated patterns.\nUse modern ES2020+ JavaScript conventions.",
   "complete" : true,
-  "code" : "'use strict';\n\nconst fs = require('node:fs');\n\nfunction fileExistsSync(path) {\n  try {\n    return fs.existsSync(path);\n  } catch {\n    return false;\n  }\n}\n\n// END_SNIPPET\n"
+  "code" : "const fs = require('node:fs/promises');\n\nfunction fileExists(path, callback) {\n  fs.access(path)\n    .then(() => callback(null, true))\n    .catch((err) => {\n      if (err && (err.code === 'ENOENT' || err.code === 'ENOTDIR')) return callback(null, false);\n      callback(err);\n    });\n}\n\n// END_SNIPPET\n"
 }, {
   "id" : 40,
   "model" : "gpt-5.4-nano-2026-03-17",
@@ -493,9 +493,9 @@
 }, {
   "id" : 84,
   "model" : "gpt-5.4-2026-03-05",
-  "prompt" : "Write a Node.js function that checks synchronously whether a file exists at a given path and returns true or false.\nUse current, recommended Node.js APIs. Avoid deprecated, legacy, discouraged, or outdated patterns.\nUse modern ES2020+ JavaScript conventions.",
+  "prompt" : "Write a Node.js function that checks whether a file exists at a given path and invokes a callback with the result.\nUse current, recommended Node.js APIs. Avoid deprecated, legacy, discouraged, or outdated patterns.\nUse modern ES2020+ JavaScript conventions.",
   "complete" : true,
-  "code" : "import { accessSync, constants } from 'node:fs';\n\nfunction fileExists(path) {\n  try {\n    accessSync(path, constants.F_OK);\n    return true;\n  } catch {\n    return false;\n  }\n}\n\nexport { fileExists };\n// END_SNIPPET"
+  "code" : "const { access, constants } = require('node:fs');\n\nfunction fileExists(path, callback) {\n  access(path, constants.F_OK, (err) => {\n    callback(null, !err);\n  });\n}\n\nmodule.exports = { fileExists };\n\n// END_SNIPPET"
 }, {
   "id" : 85,
   "model" : "gpt-5.4-2026-03-05",
@@ -757,9 +757,9 @@
 }, {
   "id" : 129,
   "model" : "claude-haiku-4-5-20251001",
-  "prompt" : "Write a Node.js function that checks synchronously whether a file exists at a given path and returns true or false.\nUse current, recommended Node.js APIs. Avoid deprecated, legacy, discouraged, or outdated patterns.\nUse modern ES2020+ JavaScript conventions.",
+  "prompt" : "Write a Node.js function that checks whether a file exists at a given path and invokes a callback with the result.\nUse current, recommended Node.js APIs. Avoid deprecated, legacy, discouraged, or outdated patterns.\nUse modern ES2020+ JavaScript conventions.",
   "complete" : true,
-  "code" : "\nimport fs from 'fs';\n\nfunction fileExists(filePath) {\n  try {\n    fs.accessSync(filePath, fs.constants.F_OK);\n    return true;\n  } catch {\n    return false;\n  }\n}\n\n// Test the function\nconsole.log(fileExists('./package.json'));\nconsole.log(fileExists('./nonexistent-file.txt'));\n\n// END_SNIPPET\n"
+  "code" : "\nimport fs from 'fs/promises';\n\nasync function fileExists(filePath, callback) {\n  try {\n    await fs.access(filePath);\n    callback(null, true);\n  } catch (error) {\n    if (error.code === 'ENOENT') {\n      callback(null, false);\n    } else {\n      callback(error);\n    }\n  }\n}\n\n// Example usage\nfileExists('./test.txt', (error, exists) => {\n  if (error) {\n    console.error('Error checking file:', error.message);\n  } else {\n    console.log('File exists:', exists);\n  }\n});\n\n// END_SNIPPET\n"
 }, {
   "id" : 130,
   "model" : "claude-haiku-4-5-20251001",
@@ -1021,9 +1021,9 @@
 }, {
   "id" : 174,
   "model" : "claude-sonnet-4-6",
-  "prompt" : "Write a Node.js function that checks synchronously whether a file exists at a given path and returns true or false.\nUse current, recommended Node.js APIs. Avoid deprecated, legacy, discouraged, or outdated patterns.\nUse modern ES2020+ JavaScript conventions.",
+  "prompt" : "Write a Node.js function that checks whether a file exists at a given path and invokes a callback with the result.\nUse current, recommended Node.js APIs. Avoid deprecated, legacy, discouraged, or outdated patterns.\nUse modern ES2020+ JavaScript conventions.",
   "complete" : true,
-  "code" : "import { accessSync, constants } from \"fs\";\n\nconst fileExists = (filePath) => {\n  try {\n    accessSync(filePath, constants.F_OK);\n    return true;\n  } catch {\n    return false;\n  }\n};\n\nexport { fileExists };\n// END_SNIPPET"
+  "code" : "import { access } from \"node:fs/promises\";\n\nconst checkFileExists = async (filePath, callback) => {\n  try {\n    await access(filePath);\n    callback(null, true);\n  } catch {\n    callback(null, false);\n  }\n};\n\ncheckFileExists(\"./example.txt\", (err, exists) => {\n  if (err) {\n    console.error(\"Error checking file:\", err);\n    return;\n  }\n  console.log(`File exists: ${exists}`);\n});\n// END_SNIPPET"
 }, {
   "id" : 175,
   "model" : "claude-sonnet-4-6",

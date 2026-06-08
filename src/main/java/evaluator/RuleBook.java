@@ -193,8 +193,8 @@ public final class RuleBook {
                     "prefer arrow functions in modern JS"),
 
             new DeprecationRule(NodeType.CALL_EXPRESSION,
-                    Conditions.deprecatedImportedMethod("fs", "existsSync"),
-                    "fs.existsSync is considered bad practice"),
+                    Conditions.deprecatedImportedMethod("fs", "exists"),
+                    "fs.exists() is deprecated)"),
 
             new DeprecationRule(NodeType.IMPORT_DECLARATION,
                     Conditions.deprecatedModule("querystring"),

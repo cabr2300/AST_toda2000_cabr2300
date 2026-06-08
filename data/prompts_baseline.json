@@ -37,7 +37,7 @@
   "Write a JavaScript function that declares a counter variable, increments it, and returns the final value.",
   "Write a JavaScript function that takes a string containing a simple mathematical expression and returns the computed result.",
   "Write a Node.js script that pads a short string on the left with zeros until it reaches a specified length.",
-  "Write a Node.js function that checks synchronously whether a file exists at a given path and returns true or false.",
+  "Write a Node.js function that checks whether a file exists at a given path and invokes a callback with the result.",
   "Write a Node.js function that parses a URL query string like \"name=Alex&age=30\" into key-value pairs.",
   "Write a React component that stores a click count and increments it when a button is clicked.",
   "Write the React entry-point code that mounts an App component into a DOM element with the id \"root\".",
