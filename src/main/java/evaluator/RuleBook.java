@@ -178,7 +178,7 @@ public final class RuleBook {
             --------------------------------------------------------------------- */
             new DeprecationRule(NodeType.VARIABLE_DECLARATION,
                     Conditions.deprecatedKind("var"),
-                    "var is deprecated, use let or const"),
+                    "the var keyword must not be used"),
 
             new DeprecationRule(NodeType.CALL_EXPRESSION,
                     Conditions.deprecatedStandardMethod("eval", "window.eval"),
